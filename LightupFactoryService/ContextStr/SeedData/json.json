@@ -1,0 +1,264 @@
+{
+  "PostContent": [
+    {
+      "KnowledgePointId": "1001",
+      "KnowledgePointName": "molex",
+      "Description": "molex fusion project",
+      "ParentId": "44c14d12e87d479e85246bbd294c3eae"
+    },
+    {
+      "KnowledgePointId": "1023",
+      "KnowledgePointName": "Requirement",
+      "Description": "get requirement from user",
+      "ParentId": "1001"
+    },
+    {
+      "KnowledgePointId": "3001",
+      "KnowledgePointName": "CPU",
+      "Description": "Requirement of CPU capability",
+      "ParentId": "1023"
+    },
+    {
+      "KnowledgePointId": "10232",
+      "KnowledgePointName": "九洲MES",
+      "Description": "Project Description of Jzhou",
+      "ParentId": "44c14d12e87d479e85246bbd294c3eae"
+    },
+    {
+      "KnowledgePointId": "21012",
+      "KnowledgePointName": "机制中心",
+      "Description": "机制中心张威",
+      "ParentId": "10232"
+    },
+    {
+      "KnowledgePointId": "34002",
+      "KnowledgePointName": "APS",
+      "Description": "先进功率停车场",
+      "ParentId": "44c14d12e87d479e85246bbd294c3eae"
+    },
+    {
+      "KnowledgePointId": "23323",
+      "KnowledgePointName": "中文翻译",
+      "Description": "222",
+      "ParentId": "34002"
+    },
+    {
+      "KnowledgePointId": "8973",
+      "KnowledgePointName": "法语翻译",
+      "Description": "中文",
+      "ParentId": "34002"
+    },
+    {
+      "KnowledgePointId": "28736",
+      "KnowledgePointName": "古诗",
+      "Description": "11",
+      "ParentId": "23323"
+    },
+    {
+      "KnowledgePointId": "988373",
+      "KnowledgePointName": "唐诗",
+      "Description": "",
+      "ParentId": "28736"
+    },
+    {
+      "KnowledgePointId": "23332",
+      "KnowledgePointName": "李白诗集",
+      "Description": "",
+      "ParentId": "988373"
+    },
+    {
+      "KnowledgePointId": "3445",
+      "KnowledgePointName": "杜甫诗集",
+      "Description": "",
+      "ParentId": "988373"
+    },
+    {
+      "KnowledgePointId": 9456,
+      "KnowledgePointName": "PQMT",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": {
+        "knowId": "1023",
+        "knowName": "Requirement"
+      }
+    },
+    {
+      "KnowledgePointId": 7646,
+      "KnowledgePointName": "PEX",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": {
+        "knowId": "1023",
+        "knowName": "Requirement"
+      }
+    },
+    {
+      "KnowledgePointId": 4845,
+      "KnowledgePointName": "PQMT",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "1023"
+    },
+    {
+      "KnowledgePointId": 6145,
+      "KnowledgePointName": "PEX",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "1023"
+    },
+    {
+      "KnowledgePointId": 703,
+      "KnowledgePointName": "PSC",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "1023"
+    },
+    {
+      "KnowledgePointId": 5159,
+      "KnowledgePointName": "MPD",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "1023"
+    },
+    {
+      "KnowledgePointId": 6700,
+      "KnowledgePointName": "实施方法论",
+      "Description": "关于实施方法论验证",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "1001"
+    },
+    {
+      "KnowledgePointId": 1966,
+      "KnowledgePointName": "需求采集与确认",
+      "Description": "通过Excel工具对各个业务环节的表单，标签，流程进行拍照，描述",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": 6700
+    },
+    {
+      "KnowledgePointId": 5369,
+      "KnowledgePointName": "功能设计与原型确认",
+      "Description": "进行原型确认",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": 6700
+    },
+    {
+      "KnowledgePointId": 8335,
+      "KnowledgePointName": "中国大戏院",
+      "Description": "",
+      "ClassId": "ed8c27c6ccf8415091380ef084f377f5",
+      "ParentId": "ed8c27c6ccf8415091380ef084f377f5"
+    },
+    {
+      "KnowledgePointId": 7647,
+      "KnowledgePointName": "拼音",
+      "Description": "",
+      "ClassId": "5badc45269314ecd91b4beee9ae8e829",
+      "ParentId": "5badc45269314ecd91b4beee9ae8e829"
+    },
+    {
+      "KnowledgePointId": 9676,
+      "KnowledgePointName": "算术",
+      "Description": "",
+      "ClassId": "5badc45269314ecd91b4beee9ae8e829",
+      "ParentId": "5badc45269314ecd91b4beee9ae8e829"
+    },
+    {
+      "KnowledgePointId": 4383,
+      "KnowledgePointName": "基础乐理学习",
+      "Description": "",
+      "ClassId": "b9d0b9053f684dee9a9feaa95224568a",
+      "ParentId": "b9d0b9053f684dee9a9feaa95224568a"
+    },
+    {
+      "KnowledgePointId": 279,
+      "KnowledgePointName": "古筝结构认识",
+      "Description": "",
+      "ClassId": "b9d0b9053f684dee9a9feaa95224568a",
+      "ParentId": "b9d0b9053f684dee9a9feaa95224568a"
+    },
+    {
+      "KnowledgePointId": 5985,
+      "KnowledgePointName": "ScottHuang",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "3001"
+    },
+    {
+      "KnowledgePointId": 2694,
+      "KnowledgePointName": "Carol",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "3001"
+    },
+    {
+      "KnowledgePointId": 940,
+      "KnowledgePointName": "Ryan",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "3001"
+    },
+    {
+      "KnowledgePointId": 1930,
+      "KnowledgePointName": "Greg",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": 4845
+    },
+    {
+      "KnowledgePointId": 253,
+      "KnowledgePointName": "JiangPing",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": 4845
+    },
+    {
+      "KnowledgePointId": 4526,
+      "KnowledgePointName": "Richie",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": 4845
+    },
+    {
+      "KnowledgePointId": 5957,
+      "KnowledgePointName": "Ethan",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": 4845
+    },
+    {
+      "KnowledgePointId": 7662,
+      "KnowledgePointName": "保利国际",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "44c14d12e87d479e85246bbd294c3eae"
+    },
+    {
+      "KnowledgePointId": 5916,
+      "KnowledgePointName": "地下停车场",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "44c14d12e87d479e85246bbd294c3eae"
+    },
+    {
+      "KnowledgePointId": 3200,
+      "KnowledgePointName": "牛魔王",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "44c14d12e87d479e85246bbd294c3eae"
+    },
+    {
+      "KnowledgePointId": 8191,
+      "KnowledgePointName": "孙悟空",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "44c14d12e87d479e85246bbd294c3eae"
+    },
+    {
+      "KnowledgePointId": 7210,
+      "KnowledgePointName": "刘骞祎",
+      "Description": "",
+      "ClassId": "44c14d12e87d479e85246bbd294c3eae",
+      "ParentId": "44c14d12e87d479e85246bbd294c3eae"
+    }
+  ]
+}

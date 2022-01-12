@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xVbXQqtEks8fuZG5807btwlDYt0CKQkl0bfs35RttnXlbS75ffEH5H2Nz6zo9Cr4GR/rRwiW1xmbeB/+x0U1tA==",
+  "dgSpecHash": "g5sLy3dJ7eV/1KopaG8r3jGrQ6B59jBaoN6CeqTTQ5g1yUafE0Bm9Q7GxY9AvqzsWaH4LoJxlYuN2vY+MGRVkw==",
   "success": true,
-  "projectFilePath": "C:\\liutao\\LightupFactory\\LightupFactoryService\\LightupFactoryService\\LightupFactoryService.csproj",
+  "projectFilePath": "C:\\Users\\Administrator\\Source\\Repos\\LightUpFactory\\LightupFactoryService\\LightupFactoryService.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\Administrator\\.nuget\\packages\\microsoft.bcl.hashcode\\1.1.1\\microsoft.bcl.hashcode.1.1.1.nupkg.sha512",

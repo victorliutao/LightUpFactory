@@ -6,4 +6,9 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
   <PropertyGroup>
     <_PublishTargetUrl>C:\liutao\Deploy\LightupFactory</_PublishTargetUrl>
   </PropertyGroup>
+  <ItemGroup>
+    <File Include="ContextStr/LightUpFactoryContext.cs">
+      <publishTime>01/12/2022 22:20:06</publishTime>
+    </File>
+  </ItemGroup>
 </Project>

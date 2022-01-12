@@ -84,6 +84,11 @@ namespace LightupFactoryService.ContextStr
         #region Knowledge management
         public virtual DbSet<KnowledgePoint> KnowledgePoint{ get; set; }
         #endregion
+
+        #region FamilyTree
+        // add class for family tree management,2022-1-12
+        #endregion
+
         public LightUpFactoryContext(DbContextOptions<LightUpFactoryContext> options)
             : base(options)
         {

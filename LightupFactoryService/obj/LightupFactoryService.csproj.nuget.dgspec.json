@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\liutao\\LightupFactory\\LightupFactoryService\\LightupFactoryService\\LightupFactoryService.csproj": {}
+    "C:\\Users\\Administrator\\Source\\Repos\\LightUpFactory\\LightupFactoryService\\LightupFactoryService.csproj": {}
   },
   "projects": {
-    "C:\\liutao\\LightupFactory\\LightupFactoryService\\LightupFactoryService\\LightupFactoryService.csproj": {
+    "C:\\Users\\Administrator\\Source\\Repos\\LightUpFactory\\LightupFactoryService\\LightupFactoryService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\liutao\\LightupFactory\\LightupFactoryService\\LightupFactoryService\\LightupFactoryService.csproj",
+        "projectUniqueName": "C:\\Users\\Administrator\\Source\\Repos\\LightUpFactory\\LightupFactoryService\\LightupFactoryService.csproj",
         "projectName": "LightupFactoryService",
-        "projectPath": "C:\\liutao\\LightupFactory\\LightupFactoryService\\LightupFactoryService\\LightupFactoryService.csproj",
+        "projectPath": "C:\\Users\\Administrator\\Source\\Repos\\LightUpFactory\\LightupFactoryService\\LightupFactoryService.csproj",
         "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\liutao\\LightupFactory\\LightupFactoryService\\LightupFactoryService\\obj\\",
+        "outputPath": "C:\\Users\\Administrator\\Source\\Repos\\LightUpFactory\\LightupFactoryService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",

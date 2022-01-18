@@ -13,5 +13,11 @@ namespace LightupFactoryService.Model
         public Nullable<System.DateTime> updateDate { get; set; }
         public string EnterpriseId { get; set; }
         public string UserId { get; set; }
+
+        //2022-1-18,添加附加字段
+        public string optionField1 { get; set; }
+        public string optionField2 { get; set; }
+        public string optionField3 { get; set; }
+
     }
 }

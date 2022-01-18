@@ -87,6 +87,7 @@ namespace LightupFactoryService.ContextStr
 
         #region FamilyTree
         // add class for family tree management,2022-1-12
+        public virtual DbSet<Family> Family { get; set; }
         #endregion
 
         public LightUpFactoryContext(DbContextOptions<LightUpFactoryContext> options)

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LightupFactoryService.Model;
 using LightupFactoryService.ContextStr;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Cors;
 
 namespace LightupFactoryService.Controllers
 {
@@ -19,13 +21,15 @@ namespace LightupFactoryService.Controllers
         {
             _serverDbContext = serverDbContext;
         }
-        
+
         /// <summary>
         /// 统一服务入口
         /// 刘涛，2021-8-24
         /// </summary>
         /// <param name="cont"></param>
         /// <returns></returns>
+        [EnableCors("PolicyTest")]
+        [HttpPost("api/PostData")]
         public retModel PostData(WebApiContent cont)
         {
             retModel ret = new retModel();

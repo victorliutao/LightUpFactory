@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LightupFactoryService.ContextStr;
+using System.Web;
+using Ssyst;
 using LightupFactoryService.Model;
 
-namespace LightupFactoryService.BusinessLogic
+namespace LightupFactoryService
 {
 	public class FamilyTxn : DataObject
 	{
-		private LightUpFactoryContext _serverDbContext;
+		private myContext _serverDbContext;
 
 		public FamilyTxn(LightUpFactoryContext serverDbContext)
 		{

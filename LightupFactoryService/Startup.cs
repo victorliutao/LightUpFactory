@@ -24,8 +24,7 @@ namespace LightupFactoryService
         }
 
         // to solve CORS Problem. 2021-10-09, liutao
-        private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
+        
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -33,18 +32,22 @@ namespace LightupFactoryService
         {
             services.AddCors(options =>
             {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                    //builder => builder.AllowAnyOrigin()
-                    //.AllowAnyMethod()
-                    //.AllowAnyHeader()
-                    //.AllowCredentials()
-                    configurePolicy: CorsPolicyBuilder => {
+                options.AddPolicy("PolicyTest",
+                    configurePolicy: CorsPolicyBuilder =>
+                    {
                         CorsPolicyBuilder.SetIsOriginAllowed(_ => true)
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
                     }
                     );
+                options.AddPolicy("DeployPolicy",
+        builder =>
+        {
+            builder.WithOrigins("http://www.contoso.com")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+        });
 
             });
 
@@ -70,7 +73,7 @@ namespace LightupFactoryService
 
             app.UseAuthorization();
             //allow CORS
-            app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors();
 
             app.UseEndpoints(endpoints =>
             {

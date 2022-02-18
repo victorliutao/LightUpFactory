@@ -24,7 +24,7 @@ namespace LightupFactoryService
         }
 
         // to solve CORS Problem. 2021-10-09, liutao
-        
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.

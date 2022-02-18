@@ -50,6 +50,7 @@ namespace LightupFactoryService.BusinessLogic.fileStream
                 StreamReader sr = new StreamReader(path);
                 for (int i = 0; i < rows; i++)
                 {
+                   
                     string item = sr.ReadLine();
                     if (item.Length > 10)
                     {

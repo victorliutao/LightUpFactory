@@ -8,9 +8,14 @@ using LightupFactoryService.Model;
 using LightupFactoryService.ContextStr;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Cors;
+using LightupFactoryService.BusinessLogic;
+using LightupFactoryService.BusinessLogic.fileStream;
+
+
 
 namespace LightupFactoryService.Controllers
 {
+    [EnableCors("PolicyTest")]
     [Route("api/[controller]")]
     [ApiController]
     public class ServiceController : ControllerBase
@@ -22,15 +27,29 @@ namespace LightupFactoryService.Controllers
             _serverDbContext = serverDbContext;
         }
 
+        [HttpGet]
+        public retModel Get() {
+            retModel ret = new retModel();
+            ret.msg = "you get me";
+            return ret;
+        }
+        
+        public retModel PostMe()
+        {
+            retModel ret = new retModel();
+            ret.msg = "you get me";
+            return ret;
+        }
+
         /// <summary>
         /// 统一服务入口
         /// 刘涛，2021-8-24
         /// </summary>
         /// <param name="cont"></param>
         /// <returns></returns>
-        [EnableCors("PolicyTest")]
-        [HttpPost("api/PostData")]
-        public retModel PostData(WebApiContent cont)
+        //[EnableCors("PolicyTest")]
+        [HttpPost]
+        public retModel Post(WebApiContent cont)
         {
             retModel ret = new retModel();
             //记录服务信息,记录发起时间
@@ -41,43 +60,52 @@ namespace LightupFactoryService.Controllers
             //添加服务日志
             if (log.controllerName != "LogQueryController")
             {
+                //获取Service,并反射类执行
                 ServiceContent sr = getServiceById(cont.ServiceId);
                 CreateNewLog(new serviceRequestLog { serviceRequestLogId = serviceRequestLogId, serviceName = sr.serviceName, controllerName = sr.controllerName, actionName = sr.actionName, requestParams = cont.PostContent + "", EnterpriseId = cont.EnterpriseId, UserId = cont.UserId });
+                //反射到相应的类和方法
+                //测试方法调用
+
+                ReflectClass rc = new ReflectClass();
+                rc.CreateMethod("LightupFactoryService.BusinessLogic.FamilyTxns", "createNewFamily", cont.PostContent.ToString(), _serverDbContext);
+                //FamilyTxns fxns = new FamilyTxns(_serverDbContext);
+                //string ObjecCont = cont.PostContent.ToString();
+                //ret=fxns.createNewFamily(ObjecCont);
             }
+
+
             //记录执行时间
             DateTime end = DateTime.Now;
             TimeSpan ts = end.Subtract(start);
             int sencond = ts.Milliseconds;
             log.txt3 = sencond.ToString();//服务执行的时长，单位为：毫秒
-            if (log.txt2.Length > 1000)
-            {
-                log.txt2 = log.txt2.Substring(0, 1000);
-            }
+            
+            //update execution log
 
-            //排除LogQuery本身的方法，不添加日志，//2020-03-26
-            if (log.controllerName != "LogQueryController")
-            {
-                //ServiceLog.getInstance().UpdateLog(log);
-            }
             return ret;
         }
 
         /// <summary>
         /// 获取服务信息
+        /// 2022-02-08, 从json串获取service内容
         /// </summary>
         /// <param name="ServiceId"></param>
         /// <returns></returns>
         public ServiceContent getServiceById(string ServiceId)
         {
             ServiceContent sc = new ServiceContent();
-            //var serviceRej = _serverDbContext.ServiceRegister.Where(r => r.ServiceId.Equals(ServiceId)).FirstOrDefault();
-            //sc.actionName = serviceRej.ServiceName;
-            //if (serviceRej != null)
-            //{
-            //    var serviceObj = _serverDbContext.ServiceObject.Where(r => r.ServiceObjectId.Equals(serviceRej.ServiceObjectId)).FirstOrDefault();
-            //    sc.serviceName = serviceObj.ServiceObjectName;
-            //    sc.controllerName = serviceObj.ControllerName;
-            //}
+            //step1： read from localfile
+            JsonFile jf = new JsonFile();
+            string path = @"C:\liutao\LightupFactory\LightupFactoryService\LightupFactoryService\";
+            path += @"/ContextStr/SeedData/ServiceMethod.json";
+            List<ServiceRegister> methodList = jf.readMultiRow(path);
+            //step2: get service method content by serviceid
+            var method = methodList.Where(r => r.ServiceId.Equals(ServiceId)).FirstOrDefault();
+            if (method != null)
+            {
+                sc.serviceName = method.ServiceName;
+                sc.controllerName = method.ServiceObject;
+            }
             return sc;
         }
 
@@ -86,6 +114,7 @@ namespace LightupFactoryService.Controllers
         /// </summary>
         /// <param name="model"></param>
         private void CreateNewLog(serviceRequestLog model) {
+            model.requestDate = DateTime.Now;
             _serverDbContext.serviceRequestLog.Add(model);
             _serverDbContext.SaveChanges();
         }

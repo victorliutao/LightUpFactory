@@ -5,13 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="BusinessLogic\FamilyTree\FamilyTxn.cs" />
     <Compile Remove="Migrations\20220118141933_family.cs" />
     <Compile Remove="Migrations\20220118141933_family.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="BusinessLogic\FamilyTree\FamilyTxn.cs" />
   </ItemGroup>
 
   <ItemGroup>

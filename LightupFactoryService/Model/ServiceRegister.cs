@@ -11,10 +11,7 @@ namespace LightupFactoryService.Model
         [Key]
         public string ServiceId { get; set; }
         public string ServiceName { get; set; }
-        public string ServiceObjectId { get; set; }
-        public string ControllerName { get; set; }
+        public string ServiceObject { get; set; }
         public string Description { get; set; }
-        public Nullable<int> showInAdd { get; set; }
-        public Nullable<int> showInEdit { get; set; }
     }
 }

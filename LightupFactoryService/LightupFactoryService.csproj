@@ -7,6 +7,20 @@
   <ItemGroup>
     <Compile Remove="Migrations\20220118141933_family.cs" />
     <Compile Remove="Migrations\20220118141933_family.Designer.cs" />
+    <Compile Remove="Migrations\20220223140516_updateStory.cs" />
+    <Compile Remove="Migrations\20220223140516_updateStory.Designer.cs" />
+    <Compile Remove="Migrations\20220224131627_updateStory.cs" />
+    <Compile Remove="Migrations\20220224131627_updateStory.Designer.cs" />
+    <Compile Remove="Migrations\20220305065858_familyStory.cs" />
+    <Compile Remove="Migrations\20220305065858_familyStory.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ContextStr\SeedData\ServiceMethod.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ContextStr\SeedData\ServiceMethod.txt" />
   </ItemGroup>
 
   <ItemGroup>

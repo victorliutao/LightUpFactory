@@ -55,7 +55,7 @@ namespace LightupFactoryService.Controllers
                     {
                         // 修改
                         //增加change count 判断
-                        if (item.changecount > know.changecount)
+                        if (item.changeCount > know.changeCount)
                         {
                             //只有修改之后才更改
                             know.KnowledgePointName = item.KnowledgePointName;
@@ -68,7 +68,7 @@ namespace LightupFactoryService.Controllers
                             know.Is_Delete = item.Is_Delete;
                             know.Is_Locked = item.Is_Locked;
                             know.updateDate = DateTime.Now;
-                            know.changecount = item.changecount;
+                            know.changeCount = item.changeCount;
 							know.sequence=item.sequence;
                         }
                     }

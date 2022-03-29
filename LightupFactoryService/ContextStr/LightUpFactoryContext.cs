@@ -18,49 +18,49 @@ namespace LightupFactoryService.ContextStr
         /// <summary>
         /// 测试表
         /// </summary>
-        public virtual DbSet<Aqllevel> Aqllevel { get; set; }
+        //public virtual DbSet<Aqllevel> Aqllevel { get; set; }
 
-        public virtual DbSet<Capa> Capa { get; set; }
+        //public virtual DbSet<Capa> Capa { get; set; }
         #region WMS
 
         /// <summary>
         /// 产品
         /// </summary>
-        public virtual DbSet<Product> Product { get; set; }
+        //public virtual DbSet<Product> Product { get; set; }
         /// <summary>
         /// 单位
         /// </summary>
-        public virtual DbSet<Unit> Unit { get; set; }
+        //public virtual DbSet<Unit> Unit { get; set; }
 
         /// <summary>
         /// 产品类型
         /// </summary>
-        public virtual DbSet<Producttype> Producttype { get; set; }
+        //public virtual DbSet<Producttype> Producttype { get; set; }
 
         /// <summary>
         /// 产品系列
         /// </summary>
-        public virtual DbSet<Productfamily> Productfamily { get; set; }
+        //public virtual DbSet<Productfamily> Productfamily { get; set; }
 
         /// <summary>
         /// 客户
         /// </summary>
-        public virtual DbSet<Customer> Customer { get; set; }
+        //public virtual DbSet<Customer> Customer { get; set; }
 
         /// <summary>
         /// 供应商
         /// </summary>
-        public virtual DbSet<Supplier> Supplier { get; set; }
+        //public virtual DbSet<Supplier> Supplier { get; set; }
 
         /// <summary>
         /// 仓库
         /// </summary>
-        public virtual DbSet<Warehouse> Warehouse { get; set; }
+        //public virtual DbSet<Warehouse> Warehouse { get; set; }
 
         /// <summary>
         /// 货位
         /// </summary>
-        public virtual DbSet<StockPoint> StockPoint { get; set; }
+        //public virtual DbSet<StockPoint> StockPoint { get; set; }
 
         #endregion
 
@@ -91,6 +91,11 @@ namespace LightupFactoryService.ContextStr
         public virtual DbSet<MemberRelation> MemberRelation { get; set; }
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<RelationShip> RelationShip { get; set; }
+        public virtual DbSet<Story> Story { get; set; }
+        public virtual DbSet<Section> Section { get; set; }
+        public virtual DbSet<SectionDetail> SectionDetail { get; set; }
+        public virtual DbSet<UserFamilyMapping> UserFamilyMapping { get; set; }
+        public virtual DbSet<KnowledgeDetail> KnowledgeDetail { get; set; }
         #endregion
 
         public LightUpFactoryContext(DbContextOptions<LightUpFactoryContext> options)

@@ -2,7 +2,7 @@
 
 namespace LightupFactoryService.Migrations
 {
-    public partial class familymodel : Migration
+    public partial class add_member_story : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

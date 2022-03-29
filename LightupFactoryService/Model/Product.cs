@@ -34,20 +34,20 @@ namespace LightupFactoryService.Model
         public string Productid { get; set; }
         public string Productrevision { get; set; }
         public string Producttypeid { get; set; }
-        public int Serialcontrolled { get; set; }
-        public int Status { get; set; }
-        public decimal Stdcost { get; set; }
-        public decimal Stdstartqty { get; set; }
-        public decimal Stdstartqty2 { get; set; }
+        public int? Serialcontrolled { get; set; }
+        public int? Status { get; set; }
+        public decimal? Stdcost { get; set; }
+        public decimal? Stdstartqty { get; set; }
+        public decimal? Stdstartqty2 { get; set; }
         public string Stdstartuom2id { get; set; }
         public string Stdstartuomid { get; set; }
-        public int Stockpointcontrolled { get; set; }
+        public int? Stockpointcontrolled { get; set; }
         public string Subfactory { get; set; }
-        public decimal Targetcycletime { get; set; }
-        public decimal Targetdurationperunit { get; set; }
-        public decimal Targetfinalyield { get; set; }
-        public decimal Targetrolledthroughputyield { get; set; }
-        public decimal Targetunitsperhour { get; set; }
+        public decimal? Targetcycletime { get; set; }
+        public decimal? Targetdurationperunit { get; set; }
+        public decimal? Targetfinalyield { get; set; }
+        public decimal? Targetrolledthroughputyield { get; set; }
+        public decimal? Targetunitsperhour { get; set; }
         public string Trainingreqgroupid { get; set; }
         public string Workflowid { get; set; }
     }

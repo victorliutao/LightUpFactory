@@ -28,12 +28,14 @@ namespace LightupFactoryService.Controllers
         }
 
         [HttpGet]
-        public retModel Get() {
+        public retModel Get()
+        {
             retModel ret = new retModel();
-            ret.msg = "you get me";
+            ReflectClass rc = new ReflectClass();
+           ret = rc.CreateMethod("LightupFactoryService.BusinessLogic." + "FamilyTxns", "getAllFamily", "{}", _serverDbContext);
             return ret;
         }
-        
+
         public retModel PostMe()
         {
             retModel ret = new retModel();
@@ -54,32 +56,32 @@ namespace LightupFactoryService.Controllers
             retModel ret = new retModel();
             //记录服务信息,记录发起时间
             DateTime start = DateTime.Now;
-            string serviceRequestLogId= Guid.NewGuid().ToString("N");
-            serviceRequestLog log = new serviceRequestLog();
-            log.serviceRequestLogId = serviceRequestLogId;
-            //添加服务日志
-            if (log.controllerName != "LogQueryController")
+            string serviceRequestLogId = Guid.NewGuid().ToString("N");
+
+            string ErrorMsg = "";
+
+            //获取Service,并反射类执行
+            ServiceContent sr = getServiceById(cont.ServiceId);
+            serviceRequestLog serviceLog = new serviceRequestLog { serviceRequestLogId = serviceRequestLogId, serviceName = sr.serviceName, controllerName = sr.controllerName, actionName = sr.actionName, requestParams = cont.PostContent + "", EnterpriseId = cont.EnterpriseId, UserId = cont.UserId };
+            CreateNewLog(serviceLog);
+
+            try
             {
-                //获取Service,并反射类执行
-                ServiceContent sr = getServiceById(cont.ServiceId);
-                CreateNewLog(new serviceRequestLog { serviceRequestLogId = serviceRequestLogId, serviceName = sr.serviceName, controllerName = sr.controllerName, actionName = sr.actionName, requestParams = cont.PostContent + "", EnterpriseId = cont.EnterpriseId, UserId = cont.UserId });
-                //反射到相应的类和方法
-                //测试方法调用
-
                 ReflectClass rc = new ReflectClass();
-                rc.CreateMethod("LightupFactoryService.BusinessLogic.FamilyTxns", "createNewFamily", cont.PostContent.ToString(), _serverDbContext);
-                //FamilyTxns fxns = new FamilyTxns(_serverDbContext);
-                //string ObjecCont = cont.PostContent.ToString();
-                //ret=fxns.createNewFamily(ObjecCont);
+                ret = rc.CreateMethod("LightupFactoryService.BusinessLogic." + sr.controllerName, sr.serviceName, cont.PostContent.ToString(), _serverDbContext);
+
             }
-
-
+            catch (Exception e)
+            {
+                serviceLog.txt2 = e.ToString();
+            }
+            
             //记录执行时间
             DateTime end = DateTime.Now;
             TimeSpan ts = end.Subtract(start);
             int sencond = ts.Milliseconds;
-            log.txt3 = sencond.ToString();//服务执行的时长，单位为：毫秒
-            
+            serviceLog.txt3 = sencond.ToString();//服务执行的时长，单位为：毫秒
+            UpdateServiceLog(serviceLog);
             //update execution log
 
             return ret;
@@ -96,8 +98,8 @@ namespace LightupFactoryService.Controllers
             ServiceContent sc = new ServiceContent();
             //step1： read from localfile
             JsonFile jf = new JsonFile();
-            string path = @"C:\liutao\LightupFactory\LightupFactoryService\LightupFactoryService\";
-            path += @"/ContextStr/SeedData/ServiceMethod.json";
+            string path = @"C:\liutao\configure\ServiceMethod.txt";
+            //path += @"/ContextStr/SeedData/ServiceMethod.txt";
             List<ServiceRegister> methodList = jf.readMultiRow(path);
             //step2: get service method content by serviceid
             var method = methodList.Where(r => r.ServiceId.Equals(ServiceId)).FirstOrDefault();
@@ -113,7 +115,8 @@ namespace LightupFactoryService.Controllers
         /// 添加服务日志
         /// </summary>
         /// <param name="model"></param>
-        private void CreateNewLog(serviceRequestLog model) {
+        private void CreateNewLog(serviceRequestLog model)
+        {
             model.requestDate = DateTime.Now;
             _serverDbContext.serviceRequestLog.Add(model);
             _serverDbContext.SaveChanges();
@@ -155,7 +158,8 @@ namespace LightupFactoryService.Controllers
     /// <summary>
     /// 服务信息
     /// </summary>
-    public class ServiceContent { 
+    public class ServiceContent
+    {
         public string serviceName { get; set; }
         public string controllerName { get; set; }
         public string actionName { get; set; }
@@ -164,7 +168,8 @@ namespace LightupFactoryService.Controllers
     /// <summary>
     /// 服务返回信息
     /// </summary>
-    public class returnModel {
+    public class returnModel
+    {
         public int code { get; set; }
         public object data { get; set; }
         public int count { get; set; }

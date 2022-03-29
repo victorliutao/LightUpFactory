@@ -13,6 +13,7 @@ namespace LightupFactoryService.Model
         public int? Is_Delete { get; set; } = 0;
 
         public int? Is_Locked { get; set; } = 0;
+        public int? changeCount { get; set; } = 0;
         public Nullable<System.DateTime> createDate { get; set; } = DateTime.Now;
         public Nullable<System.DateTime> updateDate { get; set; } = DateTime.Now;
         public string EnterpriseId { get; set; }

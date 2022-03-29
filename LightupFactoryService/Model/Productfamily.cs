@@ -12,10 +12,10 @@ namespace LightupFactoryService.Model
         public decimal Plannedcost { get; set; }
         public string Productfamilyid { get; set; }
         public string Productfamilyname { get; set; }
-        public decimal Stdcost { get; set; }
-        public decimal Stdstartqty { get; set; }
-        public decimal Stdstartqty2 { get; set; }
-        public string Stdstartuom2id { get; set; }
-        public string Stdstartuomid { get; set; }
+        public decimal? Stdcost { get; set; }
+        public decimal? Stdstartqty { get; set; }
+        public decimal? Stdstartqty2 { get; set; }
+        public string? Stdstartuom2id { get; set; }
+        public string? Stdstartuomid { get; set; }
     }
 }

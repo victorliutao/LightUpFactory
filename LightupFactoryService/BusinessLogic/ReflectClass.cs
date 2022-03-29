@@ -17,8 +17,9 @@ namespace LightupFactoryService.BusinessLogic
         /// <summary>
         /// 通过反射创建方法
         /// </summary>
-        public void CreateMethod(string className,string methodName,string postData,LightUpFactoryContext context)
+        public retModel CreateMethod(string className,string methodName,string postData,LightUpFactoryContext context)
         {
+            retModel ret = new retModel();
             Type type;
             Object obj;
             object[] ClassParams = new object[] { context };
@@ -31,7 +32,8 @@ namespace LightupFactoryService.BusinessLogic
             MethodInfo method = type.GetMethod(methodName);
             //object[] parameters= null;
             object[] parameters = new object[] {postData};
-            method.Invoke(obj, parameters);//有参数，有返回值
+            ret=(retModel)method.Invoke(obj, parameters);//有参数，有返回值
+            return ret;
         }
     }
 }

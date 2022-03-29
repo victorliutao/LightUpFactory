@@ -25,9 +25,7 @@ namespace LightupFactoryService.Model
 
         public string ParentName { get; set; }
 
-        // added field 2021-10-12, add change count. key to check whether things changed
-        public int changecount { get; set; }
-		
+       		
 		public int sequence {get;set;}
     }
 }

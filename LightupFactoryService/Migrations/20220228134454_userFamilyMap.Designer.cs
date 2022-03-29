@@ -4,14 +4,16 @@ using LightupFactoryService.ContextStr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LightupFactoryService.Migrations
 {
     [DbContext(typeof(LightUpFactoryContext))]
-    partial class LightUpFactoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220228134454_userFamilyMap")]
+    partial class userFamilyMap
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,49 +142,6 @@ namespace LightupFactoryService.Migrations
                     b.ToTable("Family");
                 });
 
-            modelBuilder.Entity("LightupFactoryService.Model.KnowledgeDetail", b =>
-                {
-                    b.Property<string>("KnowledgeDetailId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EnterpriseId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Is_Delete")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Is_Locked")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("changeCount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("createDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("optionField1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("KnowledgeDetailId");
-
-                    b.ToTable("KnowledgeDetail");
-                });
-
             modelBuilder.Entity("LightupFactoryService.Model.KnowledgePoint", b =>
                 {
                     b.Property<string>("KnowledgePointId")
@@ -267,9 +226,6 @@ namespace LightupFactoryService.Migrations
                     b.Property<int?>("Is_Locked")
                         .HasColumnType("int");
 
-                    b.Property<int>("Is_PermissionNode")
-                        .HasColumnType("int");
-
                     b.Property<string>("MemberName")
                         .HasColumnType("nvarchar(max)");
 
@@ -289,9 +245,6 @@ namespace LightupFactoryService.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("gender")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("marriageFamilyId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("optionField1")
@@ -340,9 +293,6 @@ namespace LightupFactoryService.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("changeCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("childSeq")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("createDate")

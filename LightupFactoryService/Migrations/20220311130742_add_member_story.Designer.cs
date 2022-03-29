@@ -4,14 +4,16 @@ using LightupFactoryService.ContextStr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LightupFactoryService.Migrations
 {
     [DbContext(typeof(LightUpFactoryContext))]
-    partial class LightUpFactoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220311130742_add_member_story")]
+    partial class add_member_story
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,9 +269,6 @@ namespace LightupFactoryService.Migrations
                     b.Property<int?>("Is_Locked")
                         .HasColumnType("int");
 
-                    b.Property<int>("Is_PermissionNode")
-                        .HasColumnType("int");
-
                     b.Property<string>("MemberName")
                         .HasColumnType("nvarchar(max)");
 
@@ -289,9 +288,6 @@ namespace LightupFactoryService.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("gender")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("marriageFamilyId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("optionField1")

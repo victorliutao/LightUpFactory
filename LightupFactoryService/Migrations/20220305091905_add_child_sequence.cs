@@ -2,13 +2,13 @@
 
 namespace LightupFactoryService.Migrations
 {
-    public partial class _20211108 : Migration
+    public partial class add_child_sequence : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "sequence",
-                table: "KnowledgePoint",
+                name: "childSeq",
+                table: "MemberRelation",
                 nullable: false,
                 defaultValue: 0);
         }
@@ -16,8 +16,8 @@ namespace LightupFactoryService.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "sequence",
-                table: "KnowledgePoint");
+                name: "childSeq",
+                table: "MemberRelation");
         }
     }
 }

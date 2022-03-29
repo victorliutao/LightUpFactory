@@ -63,7 +63,6 @@ C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Deb
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Debug\netcoreapp3.1\appsettings.json
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Debug\netcoreapp3.1\ContextStr\SeedData\json.json
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
-C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Debug\netcoreapp3.1\ContextStr\SeedData\ServiceMethod.json
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Debug\netcoreapp3.1\ContextStr\SeedData\ServiceObject.json
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Debug\netcoreapp3.1\ContextStr\SeedData\testjson.json
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Debug\netcoreapp3.1\LightupFactoryService.exe

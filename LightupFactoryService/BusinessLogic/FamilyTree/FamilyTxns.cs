@@ -222,6 +222,7 @@ namespace LightupFactoryService.BusinessLogic
         {
             var story = _serverDbContext.Story.Where(r => r.storyId.Equals(_StoryId)).FirstOrDefault();
             var secDetails = _serverDbContext.SectionDetail;
+            var groupEdits = _serverDbContext.GroupEdit;
             if (story != null)
             {
                 if (story.storyContent == null)
@@ -233,6 +234,10 @@ namespace LightupFactoryService.BusinessLogic
                     foreach (var section in story.storyContent)
                     {
                         section.sectionDetails = secDetails.Where(r => r.sectionId.Equals(section.sectionId)).ToList();
+
+                        //添加groupEdit,2022-4-1
+                        section.goupEditDetails = groupEdits.Where(r => r.sectionId.Equals(section.sectionId)).ToList();
+
                     }
                 }
             }
@@ -406,6 +411,21 @@ namespace LightupFactoryService.BusinessLogic
             var ufm = _serverDbContext.UserFamilyMapping.Where(r => r.UserFamilyMapId.Equals(model.UserFamilyMapId)).FirstOrDefault();
             ufm.Is_Delete = 1;
             ufm.updateDate = DateTime.Now;
+            return ret;
+        }
+
+        /// <summary>
+        /// 根据Family Id 单独获取FamilyInfo;
+        /// 2022-4-2
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel getFamilyById(string paraStr)
+        {
+            retModel ret = new retModel();
+            Family model = JsonConvert.DeserializeObject<Family>(paraStr);
+            var fam = _serverDbContext.Family.Where(r => r.FamilyId.Equals(model.FamilyId)).FirstOrDefault();
+            ret.data = fam;
             return ret;
         }
 

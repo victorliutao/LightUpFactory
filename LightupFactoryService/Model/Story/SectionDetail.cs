@@ -14,5 +14,6 @@ namespace LightupFactoryService.Model
         public int sequence { get; set; }
         public string contentDesc { get; set; }
         public string sectionId { get; set; }
+       
     }
 }

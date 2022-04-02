@@ -4,14 +4,16 @@ using LightupFactoryService.ContextStr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LightupFactoryService.Migrations
 {
     [DbContext(typeof(LightUpFactoryContext))]
-    partial class LightUpFactoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220401052340_groupEdit")]
+    partial class groupEdit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,10 +178,7 @@ namespace LightupFactoryService.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("sectionId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("sequence")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("title")
                         .HasColumnType("nvarchar(max)");
@@ -188,8 +187,6 @@ namespace LightupFactoryService.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("GroupEditId");
-
-                    b.HasIndex("sectionId");
 
                     b.ToTable("GroupEdit");
                 });
@@ -893,13 +890,6 @@ namespace LightupFactoryService.Migrations
                     b.HasOne("LightupFactoryService.Model.Story", "FamilyStory")
                         .WithMany()
                         .HasForeignKey("FamilyStorystoryId");
-                });
-
-            modelBuilder.Entity("LightupFactoryService.Model.GroupEdit", b =>
-                {
-                    b.HasOne("LightupFactoryService.Model.Section", null)
-                        .WithMany("goupEditDetails")
-                        .HasForeignKey("sectionId");
                 });
 
             modelBuilder.Entity("LightupFactoryService.Model.Member", b =>

@@ -18,6 +18,10 @@ namespace LightupFactoryService.Model
        
         public string gender { get; set; }
         public string Region { get; set; }
+        /// <summary>
+        /// 当前居住地
+        /// </summary>
+        public string residence { get; set; }
         //this is born family
         public string FamilyId { get; set; }
         //2022-3-25, Family Id after marriage relation

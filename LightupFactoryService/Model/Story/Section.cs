@@ -11,6 +11,10 @@ namespace LightupFactoryService.Model
         public string storyId { get; set; }
         public string sectionName { get; set; }
         public List<SectionDetail> sectionDetails { get; set; }
+        /// <summary>
+        /// add group edit
+        /// </summary>
+        public List<GroupEdit> goupEditDetails { get; set; }
 
         //2022-2-24, 添加序号
         public int sequence { get; set; }

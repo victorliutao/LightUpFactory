@@ -34,6 +34,17 @@ namespace LightupFactoryService.BusinessLogic
             var currentMems = _serverDbContext.Member;
             foreach (var item in memList)
             {
+                //2022-3-30，add recorde to object update history
+                ObjectsEditHistory editModel = new ObjectsEditHistory();
+                editModel.ObjectsEditHistoryId = getGuid();
+                editModel.objectName = "Member";
+                editModel.objectId = item.MemberId;
+                editModel.changeCount = item.changeCount;
+                editModel.userId = item.UserId;
+                editModel.updateDate = DateTime.Now;
+                editModel.changeContent = JsonConvert.SerializeObject(item);
+                _serverDbContext.ObjectsEditHistory.Add(editModel);  
+
                 var mem = currentMems.Where(mem => mem.MemberId.Equals(item.MemberId)).FirstOrDefault();
                 if (mem != null)
                 {
@@ -87,7 +98,7 @@ namespace LightupFactoryService.BusinessLogic
                     _serverDbContext.Member.Add(item);
                 }               
             }
-            _serverDbContext.SaveChanges();
+
             ret.code = 0;
             ret.msg = "保存成功";
             return ret;
@@ -111,10 +122,14 @@ namespace LightupFactoryService.BusinessLogic
                 if (mem != null)
                 {
                     //修改
-                    mem.parentId = item.parentId;
-                    mem.relationId = item.relationId;
-                    mem.Is_Delete = item.Is_Delete;
-                    mem.childSeq = item.childSeq;
+                    if (item.changeCount > mem.changeCount) {
+                        mem.parentId = item.parentId;
+                        mem.relationId = item.relationId;
+                        mem.Is_Delete = item.Is_Delete;
+                        mem.childSeq = item.childSeq;
+                        mem.changeCount = item.changeCount;
+                    }
+                   
                 }
                 else
                 {

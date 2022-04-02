@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LightupFactoryService.ContextStr;
 using LightupFactoryService.Model;
 
 namespace LightupFactoryService.BusinessLogic
@@ -75,5 +76,14 @@ namespace LightupFactoryService.BusinessLogic
             }     
             return secDeList;
         }
+
+        #region ObjectUpdateRecords, 2022-3-30
+        /// <summary>
+        /// 
+        /// </summary>
+        public void createObjectUpdate() { 
+            
+        }
+        #endregion
     }
 }

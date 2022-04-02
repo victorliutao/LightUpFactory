@@ -10,6 +10,7 @@ namespace LightupFactoryService.Model
         public string storyId { get; set; }
         public string storyName { get; set; }
         public List<Section> storyContent { get; set; }
+        
     }
 
     public class storyStr { 

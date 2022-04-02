@@ -4,14 +4,16 @@ using LightupFactoryService.ContextStr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LightupFactoryService.Migrations
 {
     [DbContext(typeof(LightUpFactoryContext))]
-    partial class LightUpFactoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220329125639_memerinforEnrich")]
+    partial class memerinforEnrich
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,109 +140,6 @@ namespace LightupFactoryService.Migrations
                     b.HasIndex("FamilyStorystoryId");
 
                     b.ToTable("Family");
-                });
-
-            modelBuilder.Entity("LightupFactoryService.Model.GroupEdit", b =>
-                {
-                    b.Property<string>("GroupEditId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EnterpriseId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Is_Delete")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Is_Locked")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("changeCount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("createDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("sectionId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("sequence")
-                        .HasColumnType("int");
-
-                    b.Property<string>("title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("GroupEditId");
-
-                    b.HasIndex("sectionId");
-
-                    b.ToTable("GroupEdit");
-                });
-
-            modelBuilder.Entity("LightupFactoryService.Model.GroupEditHistory", b =>
-                {
-                    b.Property<string>("GroupEditHistoryId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EnterpriseId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GroupEditId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Is_Delete")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Is_Locked")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("changeCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("contents")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("createDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("modifyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("GroupEditHistoryId");
-
-                    b.ToTable("GroupEditHistory");
                 });
 
             modelBuilder.Entity("LightupFactoryService.Model.KnowledgeDetail", b =>
@@ -445,9 +344,6 @@ namespace LightupFactoryService.Migrations
                     b.Property<string>("raiseMom")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("residence")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("respectName")
                         .HasColumnType("nvarchar(max)");
 
@@ -529,34 +425,6 @@ namespace LightupFactoryService.Migrations
                     b.HasKey("MemberRelationId");
 
                     b.ToTable("MemberRelation");
-                });
-
-            modelBuilder.Entity("LightupFactoryService.Model.ObjectsEditHistory", b =>
-                {
-                    b.Property<string>("ObjectsEditHistoryId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("changeContent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("changeCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("objectId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("objectName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("updateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("userId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ObjectsEditHistoryId");
-
-                    b.ToTable("ObjectsEditHistory");
                 });
 
             modelBuilder.Entity("LightupFactoryService.Model.RelationShip", b =>
@@ -893,13 +761,6 @@ namespace LightupFactoryService.Migrations
                     b.HasOne("LightupFactoryService.Model.Story", "FamilyStory")
                         .WithMany()
                         .HasForeignKey("FamilyStorystoryId");
-                });
-
-            modelBuilder.Entity("LightupFactoryService.Model.GroupEdit", b =>
-                {
-                    b.HasOne("LightupFactoryService.Model.Section", null)
-                        .WithMany("goupEditDetails")
-                        .HasForeignKey("sectionId");
                 });
 
             modelBuilder.Entity("LightupFactoryService.Model.Member", b =>

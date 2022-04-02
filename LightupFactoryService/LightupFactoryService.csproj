@@ -13,6 +13,8 @@
     <Compile Remove="Migrations\20220224131627_updateStory.Designer.cs" />
     <Compile Remove="Migrations\20220305065858_familyStory.cs" />
     <Compile Remove="Migrations\20220305065858_familyStory.Designer.cs" />
+    <Compile Remove="Migrations\20220401120458_groupEdit2.cs" />
+    <Compile Remove="Migrations\20220401120458_groupEdit2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

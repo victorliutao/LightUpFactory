@@ -9,13 +9,17 @@ namespace LightupFactoryService.Model
     {
         public string MemberRelationId { get; set; }
         public string MemberId { get; set; }
+        //Referenct to relation id, can be represent the relation ship with the member and the parent.
         public string RelationShipId { get; set; }
 
         public string parentId { get; set; }
-        //前端关系id, 1:配偶， 2： 子女
+        //Font end need: 1:spouse， 2： sibling
         public int relationId { get; set; }
-        //子女顺序
+        //siblings sequences
         public int childSeq { get; set; }
+
+        //add a family, to denote which family this relation belong to 
+        public string familyId {get;set;}
 
 
     }

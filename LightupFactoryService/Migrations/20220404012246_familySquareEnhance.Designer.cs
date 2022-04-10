@@ -4,14 +4,16 @@ using LightupFactoryService.ContextStr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LightupFactoryService.Migrations
 {
     [DbContext(typeof(LightUpFactoryContext))]
-    partial class LightUpFactoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220404012246_familySquareEnhance")]
+    partial class familySquareEnhance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,78 +149,6 @@ namespace LightupFactoryService.Migrations
                     b.HasIndex("FamilyStorystoryId");
 
                     b.ToTable("Family");
-                });
-
-            modelBuilder.Entity("LightupFactoryService.Model.FamilySquare", b =>
-                {
-                    b.Property<string>("FamilySquareId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EnterpriseId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FamilySquareName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Is_Delete")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Is_Locked")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShowScope")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("changeCount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("createDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("optionField1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("optionField3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("updateDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("FamilySquareId");
-
-                    b.ToTable("FamilySquare");
-                });
-
-            modelBuilder.Entity("LightupFactoryService.Model.FamilySquareDetails", b =>
-                {
-                    b.Property<string>("FamilySquareDetailsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FamilyId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FamilySquareDetailsName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FamilySquareId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("FamilySquareDetailsId");
-
-                    b.HasIndex("FamilyId");
-
-                    b.HasIndex("FamilySquareId");
-
-                    b.ToTable("FamilySquareDetails");
                 });
 
             modelBuilder.Entity("LightupFactoryService.Model.GroupEdit", b =>
@@ -588,9 +518,6 @@ namespace LightupFactoryService.Migrations
 
                     b.Property<DateTime?>("createDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("familyId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("optionField1")
                         .HasColumnType("nvarchar(max)");
@@ -977,17 +904,6 @@ namespace LightupFactoryService.Migrations
                     b.HasOne("LightupFactoryService.Model.Story", "FamilyStory")
                         .WithMany()
                         .HasForeignKey("FamilyStorystoryId");
-                });
-
-            modelBuilder.Entity("LightupFactoryService.Model.FamilySquareDetails", b =>
-                {
-                    b.HasOne("LightupFactoryService.Model.Family", "Family")
-                        .WithMany()
-                        .HasForeignKey("FamilyId");
-
-                    b.HasOne("LightupFactoryService.Model.FamilySquare", null)
-                        .WithMany("FamilyDetails")
-                        .HasForeignKey("FamilySquareId");
                 });
 
             modelBuilder.Entity("LightupFactoryService.Model.GroupEdit", b =>

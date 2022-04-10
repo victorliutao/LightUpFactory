@@ -64,7 +64,8 @@ namespace LightupFactoryService.BusinessLogic
                         mem.UserId = item.UserId;
                         //2022-3-19, 增加member编辑设置
                         mem.Is_PermissionNode = item.Is_PermissionNode;
-
+                        //
+                        mem.marriageFamilyId = item.marriageFamilyId;
                         //2022-3-29, 增加Member 扩展字段的更新
                         mem.headImage = item.headImage;
                         mem.dateOfBirth = item.dateOfBirth;

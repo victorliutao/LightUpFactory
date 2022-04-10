@@ -4,14 +4,16 @@ using LightupFactoryService.ContextStr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LightupFactoryService.Migrations
 {
     [DbContext(typeof(LightUpFactoryContext))]
-    partial class LightUpFactoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220404012628_familySquareEnhance2")]
+    partial class familySquareEnhance2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -588,9 +590,6 @@ namespace LightupFactoryService.Migrations
 
                     b.Property<DateTime?>("createDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("familyId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("optionField1")
                         .HasColumnType("nvarchar(max)");

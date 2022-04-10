@@ -4,14 +4,16 @@ using LightupFactoryService.ContextStr;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LightupFactoryService.Migrations
 {
     [DbContext(typeof(LightUpFactoryContext))]
-    partial class LightUpFactoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220407104151_relation_add_familyId")]
+    partial class relation_add_familyId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

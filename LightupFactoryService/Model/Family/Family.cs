@@ -42,5 +42,13 @@ namespace LightupFactoryService.Model
 
         public string FamilyStorystoryId { get; set; }
 
+        //在世member数量
+        public int livingMemQty { get; set; }
+        //离世member数量
+        public int passedMemQty { get; set; }
+        //显示范围：0：public，1：familygroup;2:private;3:only to me
+        public int showScope { get; set; }
+
+
     }
 }

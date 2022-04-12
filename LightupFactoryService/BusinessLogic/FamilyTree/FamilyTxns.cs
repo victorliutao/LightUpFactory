@@ -429,6 +429,93 @@ namespace LightupFactoryService.BusinessLogic
             return ret;
         }
 
+        #region Family Square
+        /// <summary>
+        /// create new Family Square
+        /// 2022-4-11
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel createFamilySquar(string paraStr) {
+            retModel ret = new retModel();
+            FamilySquare model = JsonConvert.DeserializeObject<FamilySquare>(paraStr);
+            model.Is_Delete = 0;
+            model.Is_Locked = 0;
+            model.updateDate = DateTime.Now;
+            model.createDate = DateTime.Now;
+            _serverDbContext.FamilySquare.Add(model);
+            return ret;
+        }
+
+        /// <summary>
+        /// update Family Square info
+        /// 2022-4-11
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel updateFamilySquare(string paraStr) {
+            retModel ret = new retModel();
+            FamilySquare model = JsonConvert.DeserializeObject<FamilySquare>(paraStr);
+            FamilySquare fs = _serverDbContext.FamilySquare.Where(r => r.FamilySquareId.Equals(model.FamilySquareId)).FirstOrDefault();
+            // compare change count
+            if (model.changeCount > fs.changeCount)
+            {
+                fs.updateDate = DateTime.Now;
+                fs.FamilySquareName = model.FamilySquareName;
+                fs.changeCount = model.changeCount;
+                fs.Description = model.Description;
+                fs.ShowScope = model.ShowScope;
+                fs.optionField1 = model.optionField1;
+                fs.optionField2 = model.optionField2;
+                fs.optionField3 = model.optionField3;
+            }
+            
+            return ret;
+        }
+
+        /// <summary>
+        /// Delete a family Square
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel DeleteFamilySquare(string paraStr) {
+            retModel ret = new retModel();
+            FamilySquare model = JsonConvert.DeserializeObject<FamilySquare>(paraStr);
+            FamilySquare fs = _serverDbContext.FamilySquare.Where(r => r.FamilySquareId.Equals(model.FamilySquareId)).FirstOrDefault();
+            fs.Is_Delete = 1;
+            fs.updateDate = DateTime.Now;
+            return ret;
+        }
+
+        /// <summary>
+        /// 获取Family Square, 用途： 1. 获取user编辑的Square,2.根据SquareId获取Square；3. 页面显示，根据ShowCode来查询FamilySquare
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel getFamilySquare(string paraStr) {
+            retModel ret = new retModel();
+            FamilySquare model = JsonConvert.DeserializeObject<FamilySquare>(paraStr);
+            var Fs = _serverDbContext.FamilySquare.Where(r => r.Is_Delete == 0).ToList();
+            if (!string.IsNullOrEmpty(model.UserId))
+            {
+                //根据UserId获取已编辑的Family Square, 用于展示和编辑
+                Fs = Fs.Where(r => r.UserId.Equals(model.UserId)).ToList();
+            }
+            if (!string.IsNullOrEmpty(model.FamilySquareId)) {
+                //根据Family SquareId 获取对象
+                Fs = Fs.Where(r => r.FamilySquareId.Equals(model.FamilySquareId)).ToList();
+            }
+            if (model.ShowScope != 0) {
+                //根据显示权限筛选
+                Fs = Fs.Where(r => r.ShowScope == model.ShowScope).ToList();
+            }
+            //Render Family Square Detail
+            //TBD
+            ret.data = Fs;
+            return ret;
+        }
+        #endregion
+
     }
 
     public class retFamilyMembers

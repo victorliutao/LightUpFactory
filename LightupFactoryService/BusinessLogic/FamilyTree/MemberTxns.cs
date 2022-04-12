@@ -129,6 +129,9 @@ namespace LightupFactoryService.BusinessLogic
                         mem.Is_Delete = item.Is_Delete;
                         mem.childSeq = item.childSeq;
                         mem.changeCount = item.changeCount;
+                        mem.updateDate = DateTime.Now;
+                        //2022-4-10，update relation's familyId
+                        mem.familyId = item.familyId;
                     }
                    
                 }

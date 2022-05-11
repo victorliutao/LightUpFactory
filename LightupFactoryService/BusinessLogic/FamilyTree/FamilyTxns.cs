@@ -77,8 +77,18 @@ namespace LightupFactoryService.BusinessLogic
             foreach (var item in memList)
             {
                 var mem = currentMems.Where(mem => mem.FamilyId.Equals(item.FamilyId)).FirstOrDefault();
-                if (mem != null)
+                if (mem != null&&item.changeCount>mem.changeCount)
                 {
+                    //2022-4-21，add recorde to object update history
+                    ObjectsEditHistory editModel = new ObjectsEditHistory();
+                    editModel.ObjectsEditHistoryId = getGuid();
+                    editModel.objectName = "Family";
+                    editModel.objectId = item.FamilyId;
+                    editModel.changeCount = item.changeCount;
+                    editModel.userId = item.UserId;
+                    editModel.updateDate = DateTime.Now;
+                    editModel.changeContent = JsonConvert.SerializeObject(item);
+                    _serverDbContext.ObjectsEditHistory.Add(editModel);
                     //修改
                     mem.memberId = item.memberId;
                     mem.changeCount = item.changeCount;
@@ -98,12 +108,15 @@ namespace LightupFactoryService.BusinessLogic
                     mem.optionField1 = item.optionField1;
                     mem.optionField2 = item.optionField2;
                     mem.optionField3 = item.optionField3;
+                    //增加Family属性
+                    mem.showScope = item.showScope;
+
                 }
                 else
                 {
-                    //创建
-                    item.optionField2 = getRandom(4);
-                    _serverDbContext.Family.Add(item);
+                    //创建，2022-5-11，
+                    //item.optionField2 = getRandom(4);
+                    //_serverDbContext.Family.Add(item);
                 }
             }
 
@@ -265,6 +278,7 @@ namespace LightupFactoryService.BusinessLogic
 
         /// <summary>
         /// 获取Family List/ Member List, RelationList
+        /// 2022-4-24， 仅获取权限为公开的内容
         /// </summary>
         /// <param name="FamilyStr"></param>
         /// <returns></returns>
@@ -275,8 +289,10 @@ namespace LightupFactoryService.BusinessLogic
             Family model = JsonConvert.DeserializeObject<Family>(FamilyStr);
             //2022-3-24, render Family top Member Name.
             var famList = (from a in _serverDbContext.Family
-                       join b in _serverDbContext.Member on a.memberId equals b.MemberId
+                       join b in _serverDbContext.Member on a.memberId equals b.MemberId into memList
+                       from bList in memList.DefaultIfEmpty()
                        where a.Is_Delete == 0
+                       && a.showScope==1 //显示公开的family
                        select new Family
                        {
                            FamilyId=a.FamilyId,
@@ -287,30 +303,82 @@ namespace LightupFactoryService.BusinessLogic
                            FamilyStorystoryId=a.FamilyStorystoryId,
                            GivenName=a.GivenName,
                            memberId=a.memberId,
+                           changeCount=a.changeCount,
+                           Is_Delete=a.Is_Delete,
+                           Is_Locked=a.Is_Locked,
                            optionField1=a.optionField1,
                            optionField2= a.optionField2,
-                           optionField3=b.MemberName
+                           optionField3= bList.MemberName!=null? bList.MemberName:""// handle null value
                        }
                      ).ToList();
             retContents.FamilyList = famList;
 
             // get member List from 
-            var memberList = _serverDbContext.Member.ToList();
-
-            retContents.memberList = memberList;
+           //var memberList = _serverDbContext.Member.ToList();
+           // retContents.memberList = memberList;
 
             //get relationList from members
-            var relationList = _serverDbContext.MemberRelation.ToList();
+           // var relationList = _serverDbContext.MemberRelation.ToList();
+          //  retContents.relationList = relationList;
+
+            //var storyList = _serverDbContext.Story.ToList();
+            ////补全story info
+            //foreach (var sto in storyList)
+            //{
+            //    Story res = getStory(sto.storyId);
+            //    sto.storyContent = res.storyContent;
+            //}
+            //retContents.storyList = storyList;
+
+            ret.code = 0;
+            ret.data = retContents;
+            return ret;
+        }
+
+        /// <summary>
+        /// 2022-5-7, 根据FamilyId，获取
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel getFamilyData(string paraStr) {
+            retModel ret = new retModel();
+            Family model = JsonConvert.DeserializeObject<Family>(paraStr);
+            retFamilyMembers retContents = new retFamilyMembers();
+            
+
+            //get member list by family Id
+            var memberList = _serverDbContext.Member.Where(r=>r.FamilyId.Equals(model.FamilyId)).ToList();
+            retContents.memberList = memberList;
+
+            //get member relation list by family Id
+            var relationList = _serverDbContext.MemberRelation.Where(r=>r.familyId.Equals(model.FamilyId)).ToList();
             retContents.relationList = relationList;
 
+            //get stories by family Id.
             var storyList = _serverDbContext.Story.ToList();
+            List<Story> fiStoryList = new List<Story>();
+            //add family story
+            var famstory = storyList.Where(r => r.storyId.Equals(model.FamilyStorystoryId)).FirstOrDefault();
+            if (famstory != null) {
+                fiStoryList.Add(famstory);
+            }
+
+            //add member stories
+            foreach (var sto in memberList) { 
+                var memSto= storyList.Where(r => r.storyId.Equals(sto.MmeberStorystoryId)).FirstOrDefault();
+                if (memSto != null)
+                {
+                    fiStoryList.Add(memSto);
+                }
+            }
+
             //补全story info
-            foreach (var sto in storyList)
+            foreach (var sto in fiStoryList)
             {
                 Story res = getStory(sto.storyId);
                 sto.storyContent = res.storyContent;
             }
-            retContents.storyList = storyList;
+            retContents.storyList = fiStoryList;
 
             ret.code = 0;
             ret.data = retContents;
@@ -429,6 +497,25 @@ namespace LightupFactoryService.BusinessLogic
             return ret;
         }
 
+        /// <summary>
+        /// 2022-4-26
+        /// Get Family by FamilyId List
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel getFamilyByIdList(string paraStr) {
+            retModel ret = new retModel();
+            List<string> famIds = JsonConvert.DeserializeObject<List<string>>(paraStr);
+            //List<Family> famList = JsonConvert.DeserializeObject<List<Family>>(paraStr);
+            //List<string> famIds = new List<string>();
+            //foreach (var fam in famList) {
+            //    famIds
+            //}
+            var Fams = _serverDbContext.Family.Where(r => famIds.Contains(r.FamilyId)).ToList();
+            ret.data = Fams;
+            return ret;
+        }
+
         #region Family Square
         /// <summary>
         /// create new Family Square
@@ -468,6 +555,16 @@ namespace LightupFactoryService.BusinessLogic
                 fs.optionField1 = model.optionField1;
                 fs.optionField2 = model.optionField2;
                 fs.optionField3 = model.optionField3;
+                //change family square details, delete current, add create new;
+                var currentDetails = _serverDbContext.FamilySquareDetails.Where(r => r.familySquareId.Equals(model.FamilySquareId)).ToList();
+                foreach (var item in currentDetails)
+                {
+                    _serverDbContext.FamilySquareDetails.Remove(item);
+                }
+                // add new details
+                foreach (var item in model.FamilyDetails) {
+                    _serverDbContext.FamilySquareDetails.Add(item);
+                }
             }
             
             return ret;
@@ -495,21 +592,33 @@ namespace LightupFactoryService.BusinessLogic
         public retModel getFamilySquare(string paraStr) {
             retModel ret = new retModel();
             FamilySquare model = JsonConvert.DeserializeObject<FamilySquare>(paraStr);
-            var Fs = _serverDbContext.FamilySquare.Where(r => r.Is_Delete == 0).ToList();
+            List<FamilySquare> Fs = _serverDbContext.FamilySquare.Where(r => r.Is_Delete == 0&&r.UserId!=null).ToList();
+                     
+
             if (!string.IsNullOrEmpty(model.UserId))
             {
                 //根据UserId获取已编辑的Family Square, 用于展示和编辑
-                Fs = Fs.Where(r => r.UserId.Equals(model.UserId)).ToList();
+                var neFs = Fs.Where(r => r.UserId.Equals(model.UserId)).ToList();
+                Fs = neFs;
             }
-            if (!string.IsNullOrEmpty(model.FamilySquareId)) {
+            if (!string.IsNullOrEmpty(model.FamilySquareId))
+            {
                 //根据Family SquareId 获取对象
+
                 Fs = Fs.Where(r => r.FamilySquareId.Equals(model.FamilySquareId)).ToList();
             }
-            if (model.ShowScope != 0) {
+            if (model.ShowScope != 0)
+            {
                 //根据显示权限筛选
                 Fs = Fs.Where(r => r.ShowScope == model.ShowScope).ToList();
             }
             //Render Family Square Detail
+            //2022-4-19, add family square whild loading
+            List<FamilySquareDetails> FsDetails = _serverDbContext.FamilySquareDetails.ToList();
+            foreach (var item in Fs)
+            {
+                item.FamilyDetails = FsDetails.Where(r => r.familySquareId.Equals(item.FamilySquareId)).ToList();
+            }
             //TBD
             ret.data = Fs;
             return ret;

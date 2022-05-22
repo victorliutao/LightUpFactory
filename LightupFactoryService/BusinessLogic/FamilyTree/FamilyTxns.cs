@@ -355,31 +355,36 @@ namespace LightupFactoryService.BusinessLogic
             retContents.relationList = relationList;
 
             //get stories by family Id.
-            var storyList = _serverDbContext.Story.ToList();
-            List<Story> fiStoryList = new List<Story>();
-            //add family story
-            var famstory = storyList.Where(r => r.storyId.Equals(model.FamilyStorystoryId)).FirstOrDefault();
-            if (famstory != null) {
-                fiStoryList.Add(famstory);
-            }
-
-            //add member stories
-            foreach (var sto in memberList) { 
-                var memSto= storyList.Where(r => r.storyId.Equals(sto.MmeberStorystoryId)).FirstOrDefault();
-                if (memSto != null)
-                {
-                    fiStoryList.Add(memSto);
-                }
-            }
-
-            //补全story info
-            foreach (var sto in fiStoryList)
+            //2022-5-22, if FamilyStorystoryId is not null
+            if (!string.IsNullOrEmpty(model.FamilyStorystoryId))
             {
-                Story res = getStory(sto.storyId);
-                sto.storyContent = res.storyContent;
-            }
-            retContents.storyList = fiStoryList;
+                var storyList = _serverDbContext.Story.ToList();
+                List<Story> fiStoryList = new List<Story>();
+                //add family story
+                var famstory = storyList.Where(r => r.storyId.Equals(model.FamilyStorystoryId)).FirstOrDefault();
+                if (famstory != null)
+                {
+                    fiStoryList.Add(famstory);
+                }
 
+                //add member stories
+                foreach (var sto in memberList)
+                {
+                    var memSto = storyList.Where(r => r.storyId.Equals(sto.MmeberStorystoryId)).FirstOrDefault();
+                    if (memSto != null)
+                    {
+                        fiStoryList.Add(memSto);
+                    }
+                }
+
+                //补全story info
+                foreach (var sto in fiStoryList)
+                {
+                    Story res = getStory(sto.storyId);
+                    sto.storyContent = res.storyContent;
+                }
+                retContents.storyList = fiStoryList;
+            }
             ret.code = 0;
             ret.data = retContents;
             return ret;
@@ -395,8 +400,8 @@ namespace LightupFactoryService.BusinessLogic
         {
             retModel ret = new retModel();
             UserFamilyMapping model = JsonConvert.DeserializeObject<UserFamilyMapping>(ParaStr);
-            //check if mapping already exist
-            var userMap = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId) && r.UserId.Equals(model.UserId)).FirstOrDefault();
+            //check if mapping already exist; add more criteria: member, roleId
+            var userMap = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId) && r.UserId.Equals(model.UserId)&&r.MemberId.Equals(model.MemberId)&&r.RoleId==model.RoleId).FirstOrDefault();
             if (userMap == null)
             {
                 model.UserFamilyMapId = getGuid();
@@ -496,6 +501,31 @@ namespace LightupFactoryService.BusinessLogic
             ret.data = fam;
             return ret;
         }
+
+        /// <summary>
+        /// 2022-5-17， get family by invit code
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel getFamilyByInviteCode(string paraStr)
+        {
+            retModel ret = new retModel();
+            Family model = JsonConvert.DeserializeObject<Family>(paraStr);
+            var fam = _serverDbContext.Family.Where(r => r.optionField2.Equals(model.optionField2)).FirstOrDefault();
+            if (fam != null)
+            {
+                ret.data = fam;
+                ret.msg = "获取family信息";
+            }
+            else {
+                ret.code = -1;
+                ret.msg = "获取family对象失败";
+            }
+            
+
+            return ret;
+        }
+
 
         /// <summary>
         /// 2022-4-26

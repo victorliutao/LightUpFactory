@@ -74,6 +74,8 @@ namespace LightupFactoryService.Controllers
             catch (Exception e)
             {
                 serviceLog.txt2 = e.ToString();
+                ret.code = -99;
+                ret.msg = "something went wrong, please check";
             }
             
             //记录执行时间

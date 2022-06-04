@@ -16,10 +16,11 @@ namespace LightupFactoryService.BusinessLogic
     public class StoryTxns : BaseLogic
     {
         private LightUpFactoryContext _serverDbContext;
-
-        public StoryTxns(LightUpFactoryContext serverDbContext)
+        private string _userId;
+        public StoryTxns(LightUpFactoryContext serverDbContext,string userId)
         {
             _serverDbContext = serverDbContext;
+            _userId = userId;
         }
 
         /// <summary>

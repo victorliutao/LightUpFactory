@@ -17,12 +17,12 @@ namespace LightupFactoryService.BusinessLogic
         /// <summary>
         /// 通过反射创建方法
         /// </summary>
-        public retModel CreateMethod(string className,string methodName,string postData,LightUpFactoryContext context)
+        public retModel CreateMethod(string className,string methodName,string postData,LightUpFactoryContext context,string _userId)
         {
             retModel ret = new retModel();
             Type type;
             Object obj;
-            object[] ClassParams = new object[] { context };
+            object[] ClassParams = new object[] { context,_userId };
 
             type = Type.GetType(className);//根据命名空间+类名获取类
             obj = Activator.CreateInstance(type, ClassParams); //实例化类

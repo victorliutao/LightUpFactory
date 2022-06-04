@@ -11,8 +11,10 @@ namespace LightupFactoryService.BusinessLogic
     /// </summary>
     public class BaseLogic
     {
-        
-
+        /// <summary>
+        /// 存储操作者的UserId, 2022-6-3, 在提交时赋值。
+        /// </summary>
+        public string Base_UserId { get; set; }
         /// <summary>
         /// 2022-2-8，刘涛，通用方法1：获取GUID
         /// </summary>

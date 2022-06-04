@@ -102,6 +102,9 @@ namespace LightupFactoryService.ContextStr
         public virtual DbSet<GroupEditHistory> GroupEditHistory { get; set; }
         public virtual DbSet<FamilySquare> FamilySquare { get; set; }
         public virtual DbSet<FamilySquareDetails> FamilySquareDetails { get; set; }
+
+        public virtual DbSet<AuditTask> AuditTask { get; set; }
+        public virtual DbSet<AuditHistory> AuditHistory { get; set; }
         #endregion
 
         public LightUpFactoryContext(DbContextOptions<LightUpFactoryContext> options)

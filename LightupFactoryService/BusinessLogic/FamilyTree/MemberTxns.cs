@@ -15,10 +15,12 @@ namespace LightupFactoryService.BusinessLogic
     public class MemberTxns : FamilyLogic
     {
         private LightUpFactoryContext _serverDbContext;
+        private string _userId;
 
-        public MemberTxns(LightUpFactoryContext serverDbContext)
+        public MemberTxns(LightUpFactoryContext serverDbContext,string userId)
         {
             _serverDbContext = serverDbContext;
+            _userId = userId;
         }
         /// <summary>
         /// 更新member 信息
@@ -51,40 +53,60 @@ namespace LightupFactoryService.BusinessLogic
                     //修改， 2022-3-29，增加根据changeCount来判断是否修改
                     if (item.changeCount > mem.changeCount)
                     {
-                        mem.changeCount = item.changeCount;
-                        mem.Description = item.Description;
-                        mem.FamilyId = item.FamilyId;
-                        mem.gender = item.gender;
-                        mem.Is_Delete = item.Is_Delete;
-                        mem.Is_Locked = item.Is_Locked;
-                        mem.MemberName = item.MemberName;
-                        mem.Region = item.Region;
-                        mem.status = item.status;
-                        mem.updateDate = DateTime.Now;
-                        mem.UserId = item.UserId;
-                        //2022-3-19, 增加member编辑设置
-                        mem.Is_PermissionNode = item.Is_PermissionNode;
-                        //
-                        mem.marriageFamilyId = item.marriageFamilyId;
-                        //2022-3-29, 增加Member 扩展字段的更新
-                        mem.headImage = item.headImage;
-                        mem.dateOfBirth = item.dateOfBirth;
-                        mem.dateOfBirthLunar = item.dateOfBirthLunar;
-                        mem.dateOfDeath = item.dateOfDeath;
-                        mem.dateOfDeathLunar = item.dateOfDeathLunar;
-                        mem.templeName = item.templeName;
-                        mem.yearName = item.yearName;
-                        mem.respectName = item.respectName;
-                        mem.firstName = item.firstName;
-                        mem.middleName = item.middleName;
-                        mem.givenName = item.givenName;
-                        mem.callingName = item.callingName;
-                        mem.birthDad = item.birthDad;
-                        mem.raiseDad = item.raiseDad;
-                        mem.birthMom = item.birthMom;
-                        mem.raiseMom = item.raiseMom;
-                        mem.tombLocation = item.tombLocation;
-                        mem.tombDate = item.tombDate;
+                        if (1 == 2)
+                        {
+                            //直接修改成员内容
+                            mem.changeCount = item.changeCount;
+                            mem.Description = item.Description;
+                            mem.FamilyId = item.FamilyId;
+                            mem.gender = item.gender;
+                            mem.Is_Delete = item.Is_Delete;
+                            mem.Is_Locked = item.Is_Locked;
+                            mem.MemberName = item.MemberName;
+                            mem.Region = item.Region;
+                            mem.status = item.status;
+                            mem.updateDate = DateTime.Now;
+                            mem.UserId = item.UserId;
+                            //2022-3-19, 增加member编辑设置
+                            mem.Is_PermissionNode = item.Is_PermissionNode;
+                            //
+                            mem.marriageFamilyId = item.marriageFamilyId;
+                            //2022-3-29, 增加Member 扩展字段的更新
+                            mem.headImage = item.headImage;
+                            mem.dateOfBirth = item.dateOfBirth;
+                            mem.dateOfBirthLunar = item.dateOfBirthLunar;
+                            mem.dateOfDeath = item.dateOfDeath;
+                            mem.dateOfDeathLunar = item.dateOfDeathLunar;
+                            mem.templeName = item.templeName;
+                            mem.yearName = item.yearName;
+                            mem.respectName = item.respectName;
+                            mem.firstName = item.firstName;
+                            mem.middleName = item.middleName;
+                            mem.givenName = item.givenName;
+                            mem.callingName = item.callingName;
+                            mem.birthDad = item.birthDad;
+                            mem.raiseDad = item.raiseDad;
+                            mem.birthMom = item.birthMom;
+                            mem.raiseMom = item.raiseMom;
+                            mem.tombLocation = item.tombLocation;
+                            mem.tombDate = item.tombDate;
+                        }
+                        else {
+                            //待审批后再修改成员信息
+                            UserInfo curUser = getCurrentUser(_serverDbContext, item.UserId);
+                            AuditTxns audits = new AuditTxns(_serverDbContext,item.UserId);//实例化方法，call specified methods
+                            AuditTask atmod = new AuditTask();
+                            atmod.title = "成员信息修改申请";
+                            atmod.contents = curUser.FullName + "(" + curUser.UserName + ")" + "申请修改成员:" + item.MemberName + "的基础信息";
+                            atmod.type = 3;
+                            atmod.objectId = item.MemberId;//存储user
+                            atmod.objectName = "Member";
+                            atmod.applicator = item.UserId;
+                            atmod.familyId = mem.FamilyId;
+                            atmod.objectChange = JsonConvert.SerializeObject(item);//提交申请内容，前台可以解析成页面显示
+                            audits.createAuditTask(atmod);
+                        }
+                       
                     }                   
                 }
                 else {

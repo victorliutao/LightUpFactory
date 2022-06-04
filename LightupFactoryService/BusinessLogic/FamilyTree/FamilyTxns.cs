@@ -16,10 +16,12 @@ namespace LightupFactoryService.BusinessLogic
     public class FamilyTxns : FamilyLogic
     {
         private LightUpFactoryContext _serverDbContext;
+        private string _userId;
 
-        public FamilyTxns(LightUpFactoryContext serverDbContext)
+        public FamilyTxns(LightUpFactoryContext serverDbContext,string userId)
         {
             _serverDbContext = serverDbContext;
+            _userId = userId;
         }
 
         /// <summary>
@@ -89,27 +91,48 @@ namespace LightupFactoryService.BusinessLogic
                     editModel.updateDate = DateTime.Now;
                     editModel.changeContent = JsonConvert.SerializeObject(item);
                     _serverDbContext.ObjectsEditHistory.Add(editModel);
-                    //修改
-                    mem.memberId = item.memberId;
-                    mem.changeCount = item.changeCount;
-                    mem.Description = item.Description;
-                    mem.Address = item.Address;
-                    mem.City = item.City;
-                    mem.county = item.county;
-                    mem.FamilyName = item.FamilyName;
-                    mem.GivenName = item.GivenName;
-                    mem.Is_Delete = item.Is_Delete;
-                    mem.Is_Locked = item.Is_Locked;
-                    mem.Province = item.Province;
-                    mem.zipcode = item.zipcode;
-                    mem.updateDate = DateTime.Now;
-                    mem.UserId = item.UserId;
-                    mem.memberId = item.memberId;
-                    mem.optionField1 = item.optionField1;
-                    mem.optionField2 = item.optionField2;
-                    mem.optionField3 = item.optionField3;
-                    //增加Family属性
-                    mem.showScope = item.showScope;
+
+                    if (1 == 2)
+                    {
+                        //直接对Family信息进行修改。
+                        mem.memberId = item.memberId;
+                        mem.changeCount = item.changeCount;
+                        mem.Description = item.Description;
+                        mem.Address = item.Address;
+                        mem.City = item.City;
+                        mem.county = item.county;
+                        mem.FamilyName = item.FamilyName;
+                        mem.GivenName = item.GivenName;
+                        mem.Is_Delete = item.Is_Delete;
+                        mem.Is_Locked = item.Is_Locked;
+                        mem.Province = item.Province;
+                        mem.zipcode = item.zipcode;
+                        mem.updateDate = DateTime.Now;
+                        mem.UserId = item.UserId;
+                        mem.memberId = item.memberId;
+                        mem.optionField1 = item.optionField1;
+                        mem.optionField2 = item.optionField2;
+                        mem.optionField3 = item.optionField3;
+                        //增加Family属性
+                        mem.showScope = item.showScope;
+                    }
+                    else {
+                        //??修改Family和Member,如何在审批后让内容生效？
+                        UserInfo curUser = getCurrentUser(_serverDbContext, item.UserId);
+                        AuditTxns audits = new AuditTxns(_serverDbContext,item.UserId);//实例化方法，call specified methods
+                        AuditTask atmod = new AuditTask();
+                        atmod.title = "家庭信息修改申请";
+                        atmod.contents = curUser.FullName+"("+curUser.UserName+")" + "申请修改家庭:"+item.FamilyName+"的基础信息";
+                        atmod.type = 3;
+                        atmod.objectId = item.FamilyId;//存储user
+                        atmod.objectName = "Family";
+                        atmod.applicator = item.UserId;
+                        atmod.familyId = mem.FamilyId;
+                        atmod.objectChange = JsonConvert.SerializeObject(item);//提交申请内容，前台可以解析成页面显示
+                        audits.createAuditTask(atmod);
+                    }
+
+                   
 
                 }
                 else
@@ -221,7 +244,30 @@ namespace LightupFactoryService.BusinessLogic
             storyStr story_List = JsonConvert.DeserializeObject<storyStr>(StoryList);
             foreach (Story model in story_List.StoryList)
             {
-                ret = saveStory(model);
+                if (1 == 2)
+                {
+                    ret = saveStory(model);
+                }
+                else {
+                    //启用审核，审核后再保存成功
+                    //待审批后再修改成员信息
+                    UserInfo curUser = getCurrentUser(_serverDbContext, _userId);
+                    AuditTxns audits = new AuditTxns(_serverDbContext,_userId);//实例化方法，call specified methods
+                    AuditTask atmod = new AuditTask();
+                    atmod.title = "故事信息修改申请";
+                    atmod.contents = curUser.FullName + "(" + curUser.UserName + ")" + "申请修改故事:" + model.storyName + "内容";
+                    atmod.type = 3;
+                    atmod.objectId = model.storyId;//存储user
+                    atmod.objectName = "Story";
+                    atmod.applicator = _userId;
+                    atmod.familyId = GetStoryFamilyId(_serverDbContext,model.storyId);
+                    atmod.objectChange = JsonConvert.SerializeObject(model);//提交申请内容，前台可以解析成页面显示
+                    audits.createAuditTask(atmod);
+
+                    ret.code = 0;
+                    ret.msg = "修改信息提交成功";
+                }
+               
             }
             return ret;
         }
@@ -393,6 +439,7 @@ namespace LightupFactoryService.BusinessLogic
         /// <summary>
         /// 添加家族编辑者/
         /// 2022-3-21, 检查是否已经存在
+        /// 2022-5-24，增加audit Taks请求
         /// </summary>
         /// <param name="ParaStr"></param>
         /// <returns></returns>
@@ -406,7 +453,32 @@ namespace LightupFactoryService.BusinessLogic
             {
                 model.UserFamilyMapId = getGuid();
                 model.Is_Delete = 0;
-                model.Is_Locked = 0;
+                if (model.RoleId == "3")
+                {
+                    model.Is_Locked = 1;//lock at first, waiting for audit finish, change status to 0
+
+                    //add audit history
+                    //render user infor.
+                    var userName = _serverDbContext.UserInfo.Where(r => r.UserId.Equals(model.UserId)).FirstOrDefault();
+                    var member = _serverDbContext.Member.Where(r => r.MemberId.Equals(model.MemberId)).FirstOrDefault();
+                    var familyName = _serverDbContext.Family.Where(r => r.FamilyId.Equals(model.FamilyId)).FirstOrDefault();
+                    AuditTxns audits = new AuditTxns(_serverDbContext, model.UserId);//实例化方法，call specified methods
+                    AuditTask atmod = new AuditTask();
+                    atmod.title = "家庭成员绑定申请";
+                    atmod.contents = "用户"+userName.FullName+"("+userName.UserName+"),申请绑定"+familyName.FamilyName+"的成员"+member.MemberName+"。请审核！";
+                    atmod.type = 1;
+                    atmod.objectId = model.UserFamilyMapId;//存储user
+                    atmod.objectName = "UserFamilyMapping";
+                    atmod.applicator = model.UserId;
+                    atmod.familyId = model.FamilyId;
+                    atmod.objectChange = ParaStr;//提交申请内容，前台可以解析成页面显示
+                    audits.createAuditTask(atmod);
+
+                }
+                else {
+                    model.Is_Locked = 0;
+                }
+               
                 model.createDate = DateTime.Now;
                 model.updateDate = DateTime.Now;
                 _serverDbContext.UserFamilyMapping.Add(model);

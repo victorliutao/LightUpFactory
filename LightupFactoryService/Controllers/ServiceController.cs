@@ -32,7 +32,7 @@ namespace LightupFactoryService.Controllers
         {
             retModel ret = new retModel();
             ReflectClass rc = new ReflectClass();
-           ret = rc.CreateMethod("LightupFactoryService.BusinessLogic." + "FamilyTxns", "getAllFamily", "{}", _serverDbContext);
+           ret = rc.CreateMethod("LightupFactoryService.BusinessLogic." + "FamilyTxns", "getAllFamily", "{}", _serverDbContext,"");
             return ret;
         }
 
@@ -59,6 +59,9 @@ namespace LightupFactoryService.Controllers
             string serviceRequestLogId = Guid.NewGuid().ToString("N");
 
             string ErrorMsg = "";
+            //2022-6-3,存储基础变量到BaseLogic类
+            BaseLogic baseMethods = new BaseLogic();
+            baseMethods.Base_UserId = cont.UserId;
 
             //获取Service,并反射类执行
             ServiceContent sr = getServiceById(cont.ServiceId);
@@ -68,7 +71,7 @@ namespace LightupFactoryService.Controllers
             try
             {
                 ReflectClass rc = new ReflectClass();
-                ret = rc.CreateMethod("LightupFactoryService.BusinessLogic." + sr.controllerName, sr.serviceName, cont.PostContent.ToString(), _serverDbContext);
+                ret = rc.CreateMethod("LightupFactoryService.BusinessLogic." + sr.controllerName, sr.serviceName, cont.PostContent.ToString(), _serverDbContext,cont.UserId);
 
             }
             catch (Exception e)

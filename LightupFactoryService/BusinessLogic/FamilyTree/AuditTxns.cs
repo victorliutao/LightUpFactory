@@ -140,10 +140,23 @@ namespace LightupFactoryService.BusinessLogic
                     mem.tombLocation = item.tombLocation;
                     mem.tombDate = item.tombDate;
                 }
-                else if (at.objectName == "Story") {
-                   
+                else if (at.objectName == "Story")
+                {
+
                     Story item = JsonConvert.DeserializeObject<Story>(at.objectChange);
                     saveFamStory(_serverDbContext, item);
+                }
+                else if (at.objectName == "Member_Create") {
+                    Member item = JsonConvert.DeserializeObject<Member>(at.objectChange);
+                    //添加audit，add family
+                    List<string> _paras = new List<string>();
+                    _paras.Add("描写成员故事");
+                    // string _initiSecs = "成员概述,成员大事记";
+                    //item.MmeberStory = InitiateStory(item.MmeberStorystoryId, _initiSecs, _paras,item.MemberName+"成员故事");
+                    Story sto = new Story();
+                    sto.storyId = item.MmeberStorystoryId;
+                    item.MmeberStory = sto;
+                    _serverDbContext.Member.Add(item);
                 }
             }
             ret.code = 0;
@@ -175,7 +188,8 @@ namespace LightupFactoryService.BusinessLogic
                                      title=a.title,
                                      applicator = c.FullName,// get applicator's name by mapping with userinfo
                                      contents=a.contents,
-                                     openDate=a.openDate
+                                     openDate=a.openDate,
+                                     objectChange=a.objectChange
                                  }
                                ).ToList();
 
@@ -184,6 +198,31 @@ namespace LightupFactoryService.BusinessLogic
             ret.data = filAuditTasks;
             ret.msg = "获取待审核内容成功";
             
+            return ret;
+        }
+
+        /// <summary>
+        /// 获取Object修改历史记录,2022-6-6, 根据ObjectId查询对象查询
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel getObjectHistory(string paraStr) {
+            retModel ret = new retModel();
+            ObjectsEditHistory model = JsonConvert.DeserializeObject<ObjectsEditHistory>(paraStr);
+            var objList = _serverDbContext.ObjectsEditHistory.Where(r => r.objectId.Equals(model.objectId)).OrderByDescending(s=>s.changeCount).ToList();
+
+            //render user name by user id
+            var newList = (from a in objList
+                           join b in _serverDbContext.UserInfo on a.userId equals b.UserId
+                           select new ObjectsEditHistory
+                           {
+                               changeContent = a.changeContent,
+                               updateDate = a.updateDate,
+                               userId = b.FullName + "("+b.UserName+")"
+                           }).ToList();
+            
+            ret.data = newList;
+            ret.code = 0;
             return ret;
         }
     }

@@ -110,15 +110,35 @@ namespace LightupFactoryService.BusinessLogic
                     }                   
                 }
                 else {
-                    //创建, 2022-3-8,初始化成员故事
-                    List<string> _paras = new List<string>();
-                    _paras.Add("描写成员故事");
-                    // string _initiSecs = "成员概述,成员大事记";
-                    //item.MmeberStory = InitiateStory(item.MmeberStorystoryId, _initiSecs, _paras,item.MemberName+"成员故事");
-                    Story sto = new Story();
-                    sto.storyId = item.MmeberStorystoryId;
-                    item.MmeberStory = sto;
-                    _serverDbContext.Member.Add(item);
+                    if (1 == 2)
+                    {
+                        //创建, 2022-3-8,初始化成员故事
+                        //添加audit，add family
+                        List<string> _paras = new List<string>();
+                        _paras.Add("描写成员故事");
+                        // string _initiSecs = "成员概述,成员大事记";
+                        //item.MmeberStory = InitiateStory(item.MmeberStorystoryId, _initiSecs, _paras,item.MemberName+"成员故事");
+                        Story sto = new Story();
+                        sto.storyId = item.MmeberStorystoryId;
+                        item.MmeberStory = sto;
+                        _serverDbContext.Member.Add(item);
+                    }
+                    else {
+                        //待审批后再修改成员信息
+                        UserInfo curUser = getCurrentUser(_serverDbContext, item.UserId);
+                        AuditTxns audits = new AuditTxns(_serverDbContext, item.UserId);//实例化方法，call specified methods
+                        AuditTask atmod = new AuditTask();
+                        atmod.title = "创建成员申请";
+                        atmod.contents = curUser.FullName + "(" + curUser.UserName + ")" + "申请创建成员:" + item.MemberName + "的基础信息";
+                        atmod.type = 3;
+                        atmod.objectId = item.MemberId;//存储user
+                        atmod.objectName = "Member_Create";
+                        atmod.applicator = item.UserId;
+                        atmod.familyId = item.FamilyId;
+                        atmod.objectChange = JsonConvert.SerializeObject(item);//提交申请内容，前台可以解析成页面显示
+                        audits.createAuditTask(atmod);
+                    }
+                   
                 }               
             }
 

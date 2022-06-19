@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using LightupFactoryService.ContextStr;
 using LightupFactoryService.Model;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace LightupFactoryService.BusinessLogic
 {
@@ -203,5 +205,41 @@ namespace LightupFactoryService.BusinessLogic
         }
 
         #endregion
+
+        #region Wechat Related
+        public string GetOpenId(string code) {
+            string openId = "";
+            string appid = "wx74d009b08f67c267";
+            string appSecret = "4b1df820563ad9666d2aff43e8ab8f40";
+            string url = "https://api.weixin.qq.com/sns/jscode2session?appid=wx74d009b08f67c267&secret=4b1df820563ad9666d2aff43e8ab8f40&js_code="+code+"&grant_type=authorization_code";
+            //send get service;
+
+            using (HttpClient httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                HttpResponseMessage response = httpClient.GetAsync(url).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Task<string> t = response.Content.ReadAsStringAsync();
+                    string s = t.Result;
+                    string json = JsonConvert.DeserializeObject(s).ToString();
+                    openIdres res = JsonConvert.DeserializeObject<openIdres>(json);
+                    openId = res.openid;
+
+                }
+            }
+
+
+            return openId;
+        }
+        #endregion
+
+    }
+
+    public class openIdres
+    {
+        public string session_key { get; set; }
+        public string openid { get; set; }
     }
 }

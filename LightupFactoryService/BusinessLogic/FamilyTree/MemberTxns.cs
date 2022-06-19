@@ -246,6 +246,72 @@ namespace LightupFactoryService.BusinessLogic
         }
 
         /// <summary>
+        /// 2022-6-18, login with user login
+        /// </summary>
+        /// <param name="paraStr"></param>
+        /// <returns></returns>
+        public retModel wechatLogin(string paraStr) {
+            retModel ret = new retModel();
+            UserInfo model = JsonConvert.DeserializeObject<UserInfo>(paraStr);
+            string openid = GetOpenId(model.WorkCenterId);//借用WorkCenterId 存储微信用户的code
+            var user = _serverDbContext.UserInfo.Where(r => r.ResourceId.Equals(openid)).FirstOrDefault();
+            if (user != null)
+            {
+                //openid 已存在
+                ret.code = 0;
+                ret.msg = "Login validation success";
+                ret.data = user;
+            }
+            else {
+                //open id 不存在，绑定已有用户，或注册新用户
+                var user2 = _serverDbContext.UserInfo.Where(r => r.UserName.Equals(model.UserName)).FirstOrDefault();
+                if (user2 != null)
+                {
+                    //user 已存在， 判断是更新openid, 还是新创建用户
+                    if (model.Is_Delete == 1)
+                    {
+                        //已存在，更新openid
+                        user2.ResourceId = model.ResourceId;
+                        user2.updateDate = DateTime.Now;
+
+                        ret.code = 0;
+                        ret.data = user2;
+                        ret.msg = "用户信息更新成功";
+                    }
+                    else {
+                        //用户名已存在，需要更新用户名之后再创建用户
+                        model.UserName += getRandom(4);//添加4位随机数
+                        model.UserId = getGuid();
+                        model.Is_Delete = 0;
+                        model.Is_Locked = 0;
+                        model.updateDate = DateTime.Now;
+                        model.createDate= DateTime.Now;
+                        model.ResourceId = openid;
+                        _serverDbContext.UserInfo.Add(model);
+                        ret.code = 0;
+                        ret.data = model;
+                        ret.msg = "新用户创建成功";
+                    }
+                }
+                else {
+                    //user 不存在，创建新user
+                    model.UserId = getGuid();
+                    model.Is_Delete = 0;
+                    model.Is_Locked = 0;
+                    model.updateDate = DateTime.Now;
+                    model.createDate = DateTime.Now;
+                    model.ResourceId = openid;
+                    _serverDbContext.UserInfo.Add(model);
+                    ret.code = 0;
+                    ret.data = model;
+                    ret.msg = "新用户创建成功";
+                }
+
+            }
+            return ret;
+        }
+
+        /// <summary>
         /// 新增用户familyMapping
         /// </summary>
         /// <param name="famMapStr"></param>

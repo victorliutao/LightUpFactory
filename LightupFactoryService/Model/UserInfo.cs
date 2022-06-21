@@ -21,7 +21,13 @@ namespace LightupFactoryService.Model
         public string User_password { get; set; }
         public string FactoryId { get; set; }
         public string WorkCenterId { get; set; }
+        /// <summary>
+        /// 借用字段，存放openid， 对应nickname
+        /// </summary>
         public string ResourceId { get; set; }
+        /// <summary>
+        /// 借用字段，存放url， 对应：avatarUrl
+        /// </summary>
         public string ResourceGroupId { get; set; }
     }
 }

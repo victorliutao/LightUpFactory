@@ -271,7 +271,8 @@ namespace LightupFactoryService.BusinessLogic
                     if (model.Is_Delete == 1)
                     {
                         //已存在，更新openid
-                        user2.ResourceId = model.ResourceId;
+                        user2.ResourceId = openid;
+                        user2.ResourceGroupId = model.ResourceGroupId;
                         user2.updateDate = DateTime.Now;
 
                         ret.code = 0;

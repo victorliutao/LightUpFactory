@@ -115,7 +115,6 @@ C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Rel
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Release\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Release\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\bin\Release\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\obj\Release\netcoreapp3.1\LightupFactoryService.csprojAssemblyReference.cache
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\obj\Release\netcoreapp3.1\LightupFactoryService.AssemblyInfoInputs.cache
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\obj\Release\netcoreapp3.1\LightupFactoryService.AssemblyInfo.cs
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\obj\Release\netcoreapp3.1\LightupFactoryService.csproj.CoreCompileInputs.cache
@@ -127,3 +126,4 @@ C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\obj\Rel
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\obj\Release\netcoreapp3.1\LightupFactoryService.dll
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\obj\Release\netcoreapp3.1\LightupFactoryService.pdb
 C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\obj\Release\netcoreapp3.1\LightupFactoryService.genruntimeconfig.cache
+C:\Users\Administrator\Source\Repos\LightUpFactory\LightupFactoryService\obj\Release\netcoreapp3.1\LightupFactoryService.csprojAssemblyReference.cache

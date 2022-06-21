@@ -191,7 +191,7 @@ namespace LightupFactoryService.BusinessLogic
                                      openDate=a.openDate,
                                      objectChange=a.objectChange
                                  }
-                               ).ToList();
+                               ).OrderByDescending(s=>s.openDate).ToList();
 
             }
 

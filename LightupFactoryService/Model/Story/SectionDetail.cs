@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +15,9 @@ namespace LightupFactoryService.Model
         public int sequence { get; set; }
         public string contentDesc { get; set; }
         public string sectionId { get; set; }
-       
+
+        [NotMapped]
+        public dataPermission permission { get; set; }
+
     }
 }

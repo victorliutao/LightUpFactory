@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,5 +19,8 @@ namespace LightupFactoryService.Model
 
         //2022-2-24, 添加序号
         public int sequence { get; set; }
+
+        [NotMapped]
+        public dataPermission permission { get; set; }
     }
 }

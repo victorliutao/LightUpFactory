@@ -105,6 +105,8 @@ namespace LightupFactoryService.ContextStr
 
         public virtual DbSet<AuditTask> AuditTask { get; set; }
         public virtual DbSet<AuditHistory> AuditHistory { get; set; }
+
+        public virtual DbSet<dataPermission> dataPermission { get; set; }
         #endregion
 
         public LightUpFactoryContext(DbContextOptions<LightUpFactoryContext> options)

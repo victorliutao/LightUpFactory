@@ -142,7 +142,6 @@ namespace LightupFactoryService.BusinessLogic
                 }
                 else if (at.objectName == "Story")
                 {
-
                     Story item = JsonConvert.DeserializeObject<Story>(at.objectChange);
                     saveFamStory(_serverDbContext, item);
                 }
@@ -189,7 +188,8 @@ namespace LightupFactoryService.BusinessLogic
                                      applicator = c.FullName,// get applicator's name by mapping with userinfo
                                      contents=a.contents,
                                      openDate=a.openDate,
-                                     objectChange=a.objectChange
+                                     objectChange=a.objectChange,
+                                     objectName=a.objectName
                                  }
                                ).OrderByDescending(s=>s.openDate).ToList();
 

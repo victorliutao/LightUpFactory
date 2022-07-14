@@ -333,6 +333,24 @@ namespace LightupFactoryService.BusinessLogic
         }
 
         /// <summary>
+        /// 2022-7-14， 删除用户家庭绑定
+        /// </summary>
+        /// <param name="ParaStr"></param>
+        /// <returns></returns>
+        public retModel deleteFamilyMapping(string ParaStr) {
+            retModel ret = new retModel();
+            UserFamilyMapping model = JsonConvert.DeserializeObject<UserFamilyMapping>(ParaStr);
+            var umps = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId) 
+            && r.UserId.Equals(model.UserId)
+            &&r.RoleId.Equals("3")).ToList();
+            foreach (var item in umps) {
+                _serverDbContext.UserFamilyMapping.Remove(item);
+            }
+            ret.msg = "绑定信息删除成功！";
+            return ret;
+        }
+
+        /// <summary>
         /// 2022-2-28,根据用户Id 获取Family List
         /// 7 Mar 2022, solve bug: own family has null value in list; possible history data issue, delete family, but didn't delete the mapping table
         /// </summary>

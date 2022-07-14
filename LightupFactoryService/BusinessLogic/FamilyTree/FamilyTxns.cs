@@ -18,7 +18,7 @@ namespace LightupFactoryService.BusinessLogic
         private LightUpFactoryContext _serverDbContext;
         private string _userId;
 
-        public FamilyTxns(LightUpFactoryContext serverDbContext,string userId)
+        public FamilyTxns(LightUpFactoryContext serverDbContext, string userId)
         {
             _serverDbContext = serverDbContext;
             _userId = userId;
@@ -79,7 +79,7 @@ namespace LightupFactoryService.BusinessLogic
             foreach (var item in memList)
             {
                 var mem = currentMems.Where(mem => mem.FamilyId.Equals(item.FamilyId)).FirstOrDefault();
-                if (mem != null&&item.changeCount>mem.changeCount)
+                if (mem != null && item.changeCount > mem.changeCount)
                 {
                     //2022-4-21，add recorde to object update history
                     ObjectsEditHistory editModel = new ObjectsEditHistory();
@@ -116,13 +116,14 @@ namespace LightupFactoryService.BusinessLogic
                         //增加Family属性
                         mem.showScope = item.showScope;
                     }
-                    else {
+                    else
+                    {
                         //??修改Family和Member,如何在审批后让内容生效？
                         UserInfo curUser = getCurrentUser(_serverDbContext, item.UserId);
-                        AuditTxns audits = new AuditTxns(_serverDbContext,item.UserId);//实例化方法，call specified methods
+                        AuditTxns audits = new AuditTxns(_serverDbContext, item.UserId);//实例化方法，call specified methods
                         AuditTask atmod = new AuditTask();
                         atmod.title = "家庭信息修改申请";
-                        atmod.contents = curUser.FullName+"("+curUser.UserName+")" + "申请修改家庭:"+item.FamilyName+"的基础信息";
+                        atmod.contents = curUser.FullName + "(" + curUser.UserName + ")" + "申请修改家庭:" + item.FamilyName + "的基础信息";
                         atmod.type = 3;
                         atmod.objectId = item.FamilyId;//存储user
                         atmod.objectName = "Family";
@@ -132,7 +133,7 @@ namespace LightupFactoryService.BusinessLogic
                         audits.createAuditTask(atmod);
                     }
 
-                   
+
 
                 }
                 else
@@ -163,6 +164,7 @@ namespace LightupFactoryService.BusinessLogic
             return ret;
         }
 
+        //2022-07-01，add userid logic save
         private retModel saveStory(Story model)
         {
             retModel ret = new retModel();
@@ -190,9 +192,12 @@ namespace LightupFactoryService.BusinessLogic
                     {
                         //_serverDbContext.Entry()
                         var newDet = newSec.sectionDetails.Where(r => r.detailId.Equals(_detail.detailId)).FirstOrDefault();
-                        _detail.contentDesc = newDet.contentDesc;
-                        _detail.Is_Delete = newDet.Is_Delete;
-                        _detail.updateDate = upTime;
+                        if (newDet != null)
+                        {
+                            _detail.contentDesc = newDet.contentDesc;
+                            _detail.Is_Delete = newDet.Is_Delete;
+                            _detail.updateDate = upTime;
+                        }
                     }
                 }
 
@@ -248,11 +253,12 @@ namespace LightupFactoryService.BusinessLogic
                 {
                     ret = saveStory(model);
                 }
-                else {
+                else
+                {
                     //启用审核，审核后再保存成功
                     //待审批后再修改成员信息
                     UserInfo curUser = getCurrentUser(_serverDbContext, _userId);
-                    AuditTxns audits = new AuditTxns(_serverDbContext,_userId);//实例化方法，call specified methods
+                    AuditTxns audits = new AuditTxns(_serverDbContext, _userId);//实例化方法，call specified methods
                     AuditTask atmod = new AuditTask();
                     atmod.title = "故事信息修改申请";
                     atmod.contents = curUser.FullName + "(" + curUser.UserName + ")" + "申请修改故事:" + model.storyName + "内容";
@@ -260,49 +266,19 @@ namespace LightupFactoryService.BusinessLogic
                     atmod.objectId = model.storyId;//存储user
                     atmod.objectName = "Story";
                     atmod.applicator = _userId;
-                    atmod.familyId = GetStoryFamilyId(_serverDbContext,model.storyId);
+                    atmod.familyId = GetStoryFamilyId(_serverDbContext, model.storyId);
                     atmod.objectChange = JsonConvert.SerializeObject(model);//提交申请内容，前台可以解析成页面显示
                     audits.createAuditTask(atmod);
 
                     ret.code = 0;
                     ret.msg = "修改信息提交成功";
                 }
-               
+
             }
             return ret;
         }
 
-        /// <summary>
-        /// get story and it's detail infor by storyid
-        /// </summary>
-        /// <param name="_StoryId"></param>
-        /// <returns></returns>
-        public Story getStory(string _StoryId)
-        {
-            var story = _serverDbContext.Story.Where(r => r.storyId.Equals(_StoryId)).FirstOrDefault();
-            var secDetails = _serverDbContext.SectionDetail;
-            var groupEdits = _serverDbContext.GroupEdit;
-            if (story != null)
-            {
-                if (story.storyContent == null)
-                {
-                    //添加Section
-                    story.storyContent = _serverDbContext.Section.Where(r => r.storyId.Equals(_StoryId) && r.Is_Delete == 0).ToList();
-
-                    //add section detail
-                    foreach (var section in story.storyContent)
-                    {
-                        section.sectionDetails = secDetails.Where(r => r.sectionId.Equals(section.sectionId)).ToList();
-
-                        //添加groupEdit,2022-4-1
-                        section.goupEditDetails = groupEdits.Where(r => r.sectionId.Equals(section.sectionId)).ToList();
-
-                    }
-                }
-            }
-            return story;
-        }
-
+      
         /// <summary>
         /// Refresh Family Invitation code, store in the Family Table.
         /// invitation code store in family.OptionField2
@@ -335,37 +311,37 @@ namespace LightupFactoryService.BusinessLogic
             Family model = JsonConvert.DeserializeObject<Family>(FamilyStr);
             //2022-3-24, render Family top Member Name.
             var famList = (from a in _serverDbContext.Family
-                       join b in _serverDbContext.Member on a.memberId equals b.MemberId into memList
-                       from bList in memList.DefaultIfEmpty()
-                       where a.Is_Delete == 0
-                       && a.showScope==1 //显示公开的family
-                       select new Family
-                       {
-                           FamilyId=a.FamilyId,
-                           FamilyName=a.FamilyName,
-                           Description=a.Description,
-                           createDate=a.createDate,
-                           Address=a.Address,
-                           FamilyStorystoryId=a.FamilyStorystoryId,
-                           GivenName=a.GivenName,
-                           memberId=a.memberId,
-                           changeCount=a.changeCount,
-                           Is_Delete=a.Is_Delete,
-                           Is_Locked=a.Is_Locked,
-                           optionField1=a.optionField1,
-                           optionField2= a.optionField2,
-                           optionField3= bList.MemberName!=null? bList.MemberName:""// handle null value
-                       }
+                           join b in _serverDbContext.Member on a.memberId equals b.MemberId into memList
+                           from bList in memList.DefaultIfEmpty()
+                           where a.Is_Delete == 0
+                           && (a.showScope == 1||a.showScope==0) //显示公开的family
+                           select new Family
+                           {
+                               FamilyId = a.FamilyId,
+                               FamilyName = a.FamilyName,
+                               Description = a.Description,
+                               createDate = a.createDate,
+                               Address = a.Address,
+                               FamilyStorystoryId = a.FamilyStorystoryId,
+                               GivenName = a.GivenName,
+                               memberId = a.memberId,
+                               changeCount = a.changeCount,
+                               Is_Delete = a.Is_Delete,
+                               Is_Locked = a.Is_Locked,
+                               optionField1 = a.optionField1,
+                               optionField2 = a.optionField2,
+                               optionField3 = bList.MemberName != null ? bList.MemberName : ""// handle null value
+                           }
                      ).ToList();
             retContents.FamilyList = famList;
 
             // get member List from 
-           //var memberList = _serverDbContext.Member.ToList();
-           // retContents.memberList = memberList;
+            //var memberList = _serverDbContext.Member.ToList();
+            // retContents.memberList = memberList;
 
             //get relationList from members
-           // var relationList = _serverDbContext.MemberRelation.ToList();
-          //  retContents.relationList = relationList;
+            // var relationList = _serverDbContext.MemberRelation.ToList();
+            //  retContents.relationList = relationList;
 
             //var storyList = _serverDbContext.Story.ToList();
             ////补全story info
@@ -383,42 +359,45 @@ namespace LightupFactoryService.BusinessLogic
 
         /// <summary>
         /// 2022-5-7, 根据FamilyId，获取
+        /// 2022-6-30, 根据权限获取获取内容
         /// </summary>
         /// <param name="paraStr"></param>
         /// <returns></returns>
-        public retModel getFamilyData(string paraStr) {
+        public retModel getFamilyData(string paraStr)
+        {
             retModel ret = new retModel();
             Family model = JsonConvert.DeserializeObject<Family>(paraStr);
             retFamilyMembers retContents = new retFamilyMembers();
-            
 
             //get member list by family Id
-            var memberList = _serverDbContext.Member.Where(r=>r.FamilyId.Equals(model.FamilyId)).ToList();
+            var memberList = _serverDbContext.Member.Where(r => r.FamilyId.Equals(model.FamilyId)).ToList();
             retContents.memberList = memberList;
 
             //get member relation list by family Id
-            var relationList = _serverDbContext.MemberRelation.Where(r=>r.familyId.Equals(model.FamilyId)).ToList();
+            var relationList = _serverDbContext.MemberRelation.Where(r => r.familyId.Equals(model.FamilyId)).ToList();
             retContents.relationList = relationList;
 
             //get stories by family Id.
             //2022-5-22, if FamilyStorystoryId is not null
             if (!string.IsNullOrEmpty(model.FamilyStorystoryId))
             {
-                var storyList = _serverDbContext.Story.ToList();
-                List<Story> fiStoryList = new List<Story>();
-                //add family story
-                var famstory = storyList.Where(r => r.storyId.Equals(model.FamilyStorystoryId)).FirstOrDefault();
+                List<Story> storyList = _serverDbContext.Story.ToList();
+                List<Story> fiStoryList = new List<Story>();              
+                //add family story,获取了story的全部内容，包含了story content
+                Story famstory = storyList.Where(r => r.storyId.Equals(model.FamilyStorystoryId)).FirstOrDefault();
                 if (famstory != null)
                 {
+                    famstory.optionField1 = "FamilyStory";
                     fiStoryList.Add(famstory);
                 }
 
                 //add member stories
                 foreach (var sto in memberList)
                 {
-                    var memSto = storyList.Where(r => r.storyId.Equals(sto.MmeberStorystoryId)).FirstOrDefault();
+                    Story memSto = storyList.Where(r => r.storyId.Equals(sto.MmeberStorystoryId)).FirstOrDefault();
                     if (memSto != null)
                     {
+                        famstory.optionField1 = "MemberStory";
                         fiStoryList.Add(memSto);
                     }
                 }
@@ -426,8 +405,35 @@ namespace LightupFactoryService.BusinessLogic
                 //补全story info
                 foreach (var sto in fiStoryList)
                 {
-                    Story res = getStory(sto.storyId);
-                    sto.storyContent = res.storyContent;
+                   
+                    List<GroupEdit> groupEdits = _serverDbContext.GroupEdit.ToList();
+                    List<dataPermission> dataPerms = _serverDbContext.dataPermission.ToList();//查询所有的dataPermission
+                   
+                    //LINQ Query syntax:
+                    var secD = from a in _serverDbContext.SectionDetail
+                                     where a.sectionId != null
+                                     select a;
+                    List<Section> secs = (from b in _serverDbContext.Section
+                                          where b.storyId == sto.storyId && b.Is_Delete == 0
+                                          select b).ToList();
+                    List<SectionDetail> secDetails = secD.ToList();
+                    #region 2022-7-5, 获取判断 by Member 判断权限的基础数据
+                    //2022-7-5, Prepare validation data for Member permission.
+                    string _FamilyId = GetStoryFamilyId(_serverDbContext, sto.storyId); ;
+                    List<string> _DecMems = new List<string>();
+                    if (sto.optionField1 == "MemberStory")
+                    {
+                        //get members who is child of the member which the storyid belong to, 
+                        string memberId = GetMemberIdbyStoryId(_serverDbContext, sto.storyId);
+                        if (!string.IsNullOrEmpty(memberId))
+                        {
+                            _DecMems = GetMemberDecendentsList(_serverDbContext, memberId);
+                        }                        
+                    }
+                    #endregion
+
+                    sto.storyContent = getStorycont(_serverDbContext,secs, secDetails, groupEdits, dataPerms,model.UserId,_DecMems,_FamilyId);
+                   
                 }
                 retContents.storyList = fiStoryList;
             }
@@ -448,7 +454,7 @@ namespace LightupFactoryService.BusinessLogic
             retModel ret = new retModel();
             UserFamilyMapping model = JsonConvert.DeserializeObject<UserFamilyMapping>(ParaStr);
             //check if mapping already exist; add more criteria: member, roleId
-            var userMap = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId) && r.UserId.Equals(model.UserId)&&r.MemberId.Equals(model.MemberId)&&r.RoleId==model.RoleId).FirstOrDefault();
+            var userMap = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId) && r.UserId.Equals(model.UserId) && r.MemberId.Equals(model.MemberId) && r.RoleId == model.RoleId).FirstOrDefault();
             if (userMap == null)
             {
                 model.UserFamilyMapId = getGuid();
@@ -465,7 +471,7 @@ namespace LightupFactoryService.BusinessLogic
                     AuditTxns audits = new AuditTxns(_serverDbContext, model.UserId);//实例化方法，call specified methods
                     AuditTask atmod = new AuditTask();
                     atmod.title = "家庭成员绑定申请";
-                    atmod.contents = "用户"+userName.FullName+"("+userName.UserName+"),申请绑定"+familyName.FamilyName+"的成员"+member.MemberName+"。请审核！";
+                    atmod.contents = "用户" + userName.FullName + "(" + userName.UserName + "),申请绑定" + familyName.FamilyName + "的成员" + member.MemberName + "。请审核！";
                     atmod.type = 1;
                     atmod.objectId = model.UserFamilyMapId;//存储user
                     atmod.objectName = "UserFamilyMapping";
@@ -475,10 +481,11 @@ namespace LightupFactoryService.BusinessLogic
                     audits.createAuditTask(atmod);
 
                 }
-                else {
+                else
+                {
                     model.Is_Locked = 0;
                 }
-               
+
                 model.createDate = DateTime.Now;
                 model.updateDate = DateTime.Now;
                 _serverDbContext.UserFamilyMapping.Add(model);
@@ -589,11 +596,12 @@ namespace LightupFactoryService.BusinessLogic
                 ret.data = fam;
                 ret.msg = "获取family信息";
             }
-            else {
+            else
+            {
                 ret.code = -1;
                 ret.msg = "获取family对象失败";
             }
-            
+
 
             return ret;
         }
@@ -605,7 +613,8 @@ namespace LightupFactoryService.BusinessLogic
         /// </summary>
         /// <param name="paraStr"></param>
         /// <returns></returns>
-        public retModel getFamilyByIdList(string paraStr) {
+        public retModel getFamilyByIdList(string paraStr)
+        {
             retModel ret = new retModel();
             List<string> famIds = JsonConvert.DeserializeObject<List<string>>(paraStr);
             //List<Family> famList = JsonConvert.DeserializeObject<List<Family>>(paraStr);
@@ -625,7 +634,8 @@ namespace LightupFactoryService.BusinessLogic
         /// </summary>
         /// <param name="paraStr"></param>
         /// <returns></returns>
-        public retModel createFamilySquar(string paraStr) {
+        public retModel createFamilySquar(string paraStr)
+        {
             retModel ret = new retModel();
             FamilySquare model = JsonConvert.DeserializeObject<FamilySquare>(paraStr);
             model.Is_Delete = 0;
@@ -642,7 +652,8 @@ namespace LightupFactoryService.BusinessLogic
         /// </summary>
         /// <param name="paraStr"></param>
         /// <returns></returns>
-        public retModel updateFamilySquare(string paraStr) {
+        public retModel updateFamilySquare(string paraStr)
+        {
             retModel ret = new retModel();
             FamilySquare model = JsonConvert.DeserializeObject<FamilySquare>(paraStr);
             FamilySquare fs = _serverDbContext.FamilySquare.Where(r => r.FamilySquareId.Equals(model.FamilySquareId)).FirstOrDefault();
@@ -664,11 +675,12 @@ namespace LightupFactoryService.BusinessLogic
                     _serverDbContext.FamilySquareDetails.Remove(item);
                 }
                 // add new details
-                foreach (var item in model.FamilyDetails) {
+                foreach (var item in model.FamilyDetails)
+                {
                     _serverDbContext.FamilySquareDetails.Add(item);
                 }
             }
-            
+
             return ret;
         }
 
@@ -677,7 +689,8 @@ namespace LightupFactoryService.BusinessLogic
         /// </summary>
         /// <param name="paraStr"></param>
         /// <returns></returns>
-        public retModel DeleteFamilySquare(string paraStr) {
+        public retModel DeleteFamilySquare(string paraStr)
+        {
             retModel ret = new retModel();
             FamilySquare model = JsonConvert.DeserializeObject<FamilySquare>(paraStr);
             FamilySquare fs = _serverDbContext.FamilySquare.Where(r => r.FamilySquareId.Equals(model.FamilySquareId)).FirstOrDefault();
@@ -691,11 +704,12 @@ namespace LightupFactoryService.BusinessLogic
         /// </summary>
         /// <param name="paraStr"></param>
         /// <returns></returns>
-        public retModel getFamilySquare(string paraStr) {
+        public retModel getFamilySquare(string paraStr)
+        {
             retModel ret = new retModel();
             FamilySquare model = JsonConvert.DeserializeObject<FamilySquare>(paraStr);
-            List<FamilySquare> Fs = _serverDbContext.FamilySquare.Where(r => r.Is_Delete == 0&&r.UserId!=null).ToList();
-                     
+            List<FamilySquare> Fs = _serverDbContext.FamilySquare.Where(r => r.Is_Delete == 0 && r.UserId != null).ToList();
+
 
             if (!string.IsNullOrEmpty(model.UserId))
             {

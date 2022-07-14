@@ -1,4 +1,5 @@
 ﻿using LightupFactoryService.ContextStr;
+using LightupFactoryService.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,5 +39,33 @@ namespace LightupFactoryService.BusinessLogic
             }
             return ramdomStr;
         }
+
+        /// <summary>
+        /// 增加公共方法，修改data显示权限
+        /// 2022-6-29
+        /// </summary>
+        /// <param name="_serverDbContext"></param>
+        /// <param name="model"></param>
+        public void updatedataPermission(LightUpFactoryContext _serverDbContext, dataPermission model) {
+            //判断是否已存在
+            var dataPer = _serverDbContext.dataPermission.Where(r => r.objectId.Equals(model.objectId) && r.objectName.Equals(model.objectName)).FirstOrDefault();
+            if (dataPer == null)
+            {
+                //new created
+                model.dataPermissionId = getGuid();
+                model.updateDate = DateTime.Now;
+                model.createDate = DateTime.Now;               
+                _serverDbContext.dataPermission.Add(model);
+            }
+            else {
+                //already exsit, only need to be modified
+                dataPer.showScope = model.showScope;
+                dataPer.scopeMemberId = model.scopeMemberId;
+                dataPer.scopeUserId = model.scopeUserId;
+                dataPer.updateDate = DateTime.Now;
+            }
+        }
+
+        
     }
 }

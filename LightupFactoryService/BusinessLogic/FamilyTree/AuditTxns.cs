@@ -75,6 +75,15 @@ namespace LightupFactoryService.BusinessLogic
             //审批的后续操作
             if (at.approvalStatus == 1)
             {
+                //修改member Bind
+                if (at.type == 1)
+                {
+                    var ump = _serverDbContext.UserFamilyMapping.Where(r => r.UserFamilyMapId.Equals(at.objectId)).FirstOrDefault();
+                    if (ump != null)
+                    {
+                        ump.Is_Locked = 0;//解除锁定
+                    }
+                }
                 //修改Family
                 if (at.objectName == "Family")
                 {
@@ -145,7 +154,8 @@ namespace LightupFactoryService.BusinessLogic
                     Story item = JsonConvert.DeserializeObject<Story>(at.objectChange);
                     saveFamStory(_serverDbContext, item);
                 }
-                else if (at.objectName == "Member_Create") {
+                else if (at.objectName == "Member_Create")
+                {
                     Member item = JsonConvert.DeserializeObject<Member>(at.objectChange);
                     //添加audit，add family
                     List<string> _paras = new List<string>();
@@ -156,6 +166,15 @@ namespace LightupFactoryService.BusinessLogic
                     sto.storyId = item.MmeberStorystoryId;
                     item.MmeberStory = sto;
                     _serverDbContext.Member.Add(item);
+                }
+            }
+            else {
+                //表示审批未通过
+                if (at.type == 1)
+                {
+                    //删除用户绑定
+                    var ump = _serverDbContext.UserFamilyMapping.Where(r => r.UserFamilyMapId.Equals(at.objectId)).FirstOrDefault();
+                    _serverDbContext.UserFamilyMapping.Remove(ump);
                 }
             }
             ret.code = 0;

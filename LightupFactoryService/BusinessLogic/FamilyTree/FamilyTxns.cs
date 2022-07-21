@@ -461,6 +461,20 @@ namespace LightupFactoryService.BusinessLogic
                 model.Is_Delete = 0;
                 if (model.RoleId == "3")
                 {
+                    // add validation, by familyid, by userid, by roleid
+                    var ufm = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId) && r.UserId.Equals(model.UserId) && r.RoleId.Equals("3")).FirstOrDefault();
+                    if (ufm != null)
+                    {
+                        //already existe
+                        ret.code = -1;
+                        var mem = _serverDbContext.Member.Where(r => r.MemberId.Equals(ufm.MemberId)).FirstOrDefault();
+                        ret.msg = "您已经绑定过该家族的成员:" + mem.MemberName;
+                        if (ufm.Is_Locked == 1)
+                        {
+                            ret.msg += ", 状态为待审批，请联系管理审批通过";
+                        }
+                        return ret;
+                    }
                     model.Is_Locked = 1;//lock at first, waiting for audit finish, change status to 0
 
                     //add audit history
@@ -480,6 +494,16 @@ namespace LightupFactoryService.BusinessLogic
                     atmod.objectChange = ParaStr;//提交申请内容，前台可以解析成页面显示
                     audits.createAuditTask(atmod);
 
+                    //1011-07-19,修改添加成功后的返回内容格式
+                    ret.data = new
+                    {
+                        familyId = model.FamilyId,
+                        familyName = familyName.FamilyName,
+                        givenName = familyName.GivenName,
+                        memberId = member.MemberId,
+                        memberName = member.MemberName,
+                        userFamilyMapId = model.UserFamilyMapId
+                    };
                 }
                 else
                 {

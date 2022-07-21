@@ -17,7 +17,7 @@ namespace LightupFactoryService.BusinessLogic
         private LightUpFactoryContext _serverDbContext;
         private string _userId;
 
-        public MemberTxns(LightUpFactoryContext serverDbContext,string userId)
+        public MemberTxns(LightUpFactoryContext serverDbContext, string userId)
         {
             _serverDbContext = serverDbContext;
             _userId = userId;
@@ -45,7 +45,7 @@ namespace LightupFactoryService.BusinessLogic
                 editModel.userId = item.UserId;
                 editModel.updateDate = DateTime.Now;
                 editModel.changeContent = JsonConvert.SerializeObject(item);
-                _serverDbContext.ObjectsEditHistory.Add(editModel);  
+                _serverDbContext.ObjectsEditHistory.Add(editModel);
 
                 var mem = currentMems.Where(mem => mem.MemberId.Equals(item.MemberId)).FirstOrDefault();
                 if (mem != null)
@@ -91,10 +91,11 @@ namespace LightupFactoryService.BusinessLogic
                             mem.tombLocation = item.tombLocation;
                             mem.tombDate = item.tombDate;
                         }
-                        else {
+                        else
+                        {
                             //待审批后再修改成员信息
                             UserInfo curUser = getCurrentUser(_serverDbContext, item.UserId);
-                            AuditTxns audits = new AuditTxns(_serverDbContext,item.UserId);//实例化方法，call specified methods
+                            AuditTxns audits = new AuditTxns(_serverDbContext, item.UserId);//实例化方法，call specified methods
                             AuditTask atmod = new AuditTask();
                             atmod.title = "成员信息修改申请";
                             atmod.contents = curUser.FullName + "(" + curUser.UserName + ")" + "申请修改成员:" + item.MemberName + "的基础信息";
@@ -106,10 +107,11 @@ namespace LightupFactoryService.BusinessLogic
                             atmod.objectChange = JsonConvert.SerializeObject(item);//提交申请内容，前台可以解析成页面显示
                             audits.createAuditTask(atmod);
                         }
-                       
-                    }                   
+
+                    }
                 }
-                else {
+                else
+                {
                     if (1 == 2)
                     {
                         //创建, 2022-3-8,初始化成员故事
@@ -123,7 +125,8 @@ namespace LightupFactoryService.BusinessLogic
                         item.MmeberStory = sto;
                         _serverDbContext.Member.Add(item);
                     }
-                    else {
+                    else
+                    {
                         //待审批后再修改成员信息
                         UserInfo curUser = getCurrentUser(_serverDbContext, item.UserId);
                         AuditTxns audits = new AuditTxns(_serverDbContext, item.UserId);//实例化方法，call specified methods
@@ -138,8 +141,8 @@ namespace LightupFactoryService.BusinessLogic
                         atmod.objectChange = JsonConvert.SerializeObject(item);//提交申请内容，前台可以解析成页面显示
                         audits.createAuditTask(atmod);
                     }
-                   
-                }               
+
+                }
             }
 
             ret.code = 0;
@@ -165,7 +168,8 @@ namespace LightupFactoryService.BusinessLogic
                 if (mem != null)
                 {
                     //修改
-                    if (item.changeCount > mem.changeCount) {
+                    if (item.changeCount > mem.changeCount)
+                    {
                         mem.parentId = item.parentId;
                         mem.relationId = item.relationId;
                         mem.Is_Delete = item.Is_Delete;
@@ -175,7 +179,7 @@ namespace LightupFactoryService.BusinessLogic
                         //2022-4-10，update relation's familyId
                         mem.familyId = item.familyId;
                     }
-                   
+
                 }
                 else
                 {
@@ -196,7 +200,8 @@ namespace LightupFactoryService.BusinessLogic
         /// </summary>
         /// <param name="userStr"></param>
         /// <returns></returns>
-        public retModel RegisterUser(string userStr) {
+        public retModel RegisterUser(string userStr)
+        {
             retModel ret = new retModel();
             UserInfo user = JsonConvert.DeserializeObject<UserInfo>(userStr);
             user.UserId = getGuid();//获取guid
@@ -208,7 +213,7 @@ namespace LightupFactoryService.BusinessLogic
             _serverDbContext.UserInfo.Add(user);
             _serverDbContext.SaveChanges();
             ret.msg = "用户注册成功！";
-            ret.code = 0;           
+            ret.code = 0;
             ret.data = user;
             return ret;
         }
@@ -219,7 +224,8 @@ namespace LightupFactoryService.BusinessLogic
         /// </summary>
         /// <param name="userStr"></param>
         /// <returns></returns>
-        public retModel UserLogin(string userStr) {
+        public retModel UserLogin(string userStr)
+        {
             retModel ret = new retModel();
             UserInfo model = JsonConvert.DeserializeObject<UserInfo>(userStr);
             //valiate if credential is correct
@@ -229,19 +235,21 @@ namespace LightupFactoryService.BusinessLogic
                 ret.msg = "用户不存在";
                 ret.code = -1;
             }
-            else {
+            else
+            {
                 if (user.User_password != model.User_password)
                 {
                     ret.msg = "密码不正确";
                     ret.code = -1;
                 }
-                else {
+                else
+                {
                     ret.msg = "登录成功";
                     ret.code = 0;
                     ret.data = user;
                 }
             }
-          
+
             return ret;
         }
 
@@ -250,7 +258,8 @@ namespace LightupFactoryService.BusinessLogic
         /// </summary>
         /// <param name="paraStr"></param>
         /// <returns></returns>
-        public retModel wechatLogin(string paraStr) {
+        public retModel wechatLogin(string paraStr)
+        {
             retModel ret = new retModel();
             UserInfo model = JsonConvert.DeserializeObject<UserInfo>(paraStr);
             string openid = GetOpenId(model.WorkCenterId);//借用WorkCenterId 存储微信用户的code
@@ -262,7 +271,8 @@ namespace LightupFactoryService.BusinessLogic
                 ret.msg = "Login validation success";
                 ret.data = user;
             }
-            else {
+            else
+            {
                 //open id 不存在，绑定已有用户，或注册新用户
                 var user2 = _serverDbContext.UserInfo.Where(r => r.UserName.Equals(model.UserName)).FirstOrDefault();
                 if (user2 != null)
@@ -279,14 +289,15 @@ namespace LightupFactoryService.BusinessLogic
                         ret.data = user2;
                         ret.msg = "用户信息更新成功";
                     }
-                    else {
+                    else
+                    {
                         //用户名已存在，需要更新用户名之后再创建用户
                         model.UserName += getRandom(4);//添加4位随机数
                         model.UserId = getGuid();
                         model.Is_Delete = 0;
                         model.Is_Locked = 0;
                         model.updateDate = DateTime.Now;
-                        model.createDate= DateTime.Now;
+                        model.createDate = DateTime.Now;
                         model.ResourceId = openid;
                         _serverDbContext.UserInfo.Add(model);
                         ret.code = 0;
@@ -294,7 +305,8 @@ namespace LightupFactoryService.BusinessLogic
                         ret.msg = "新用户创建成功";
                     }
                 }
-                else {
+                else
+                {
                     //user 不存在，创建新user
                     model.UserId = getGuid();
                     model.Is_Delete = 0;
@@ -314,12 +326,31 @@ namespace LightupFactoryService.BusinessLogic
 
         /// <summary>
         /// 新增用户familyMapping
+        /// 2022-7-19，添加一个家族只允许绑定一个人的限制
         /// </summary>
         /// <param name="famMapStr"></param>
         /// <returns></returns>
-        public retModel addFmilyMapping(string famMapStr) {
+        public retModel addFmilyMapping(string famMapStr)
+        {
             retModel ret = new retModel();
             UserFamilyMapping model = JsonConvert.DeserializeObject<UserFamilyMapping>(famMapStr);
+            if (model.RoleId == "3")
+            {
+                // add validation, by familyid, by userid, by roleid
+                var ufm = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId) && r.UserId.Equals(model.UserId) && r.RoleId.Equals("3")).FirstOrDefault();
+                if (ufm != null)
+                {
+                    //already existe
+                    ret.code = -1;
+                    var mem = _serverDbContext.Member.Where(r => r.MemberId.Equals(ufm.MemberId)).FirstOrDefault();
+                    ret.msg = "您已经绑定过该家族的成员:" + mem.MemberName;
+                    if (ufm.Is_Locked == 1)
+                    {
+                        ret.msg += ", 状态为待审批，请联系管理审批通过";
+                    }
+                    return ret;
+                }
+            }           
             model.UserFamilyMapId = getGuid();
             model.updateDate = DateTime.Now;
             model.createDate = DateTime.Now;
@@ -337,13 +368,15 @@ namespace LightupFactoryService.BusinessLogic
         /// </summary>
         /// <param name="ParaStr"></param>
         /// <returns></returns>
-        public retModel deleteFamilyMapping(string ParaStr) {
+        public retModel deleteFamilyMapping(string ParaStr)
+        {
             retModel ret = new retModel();
             UserFamilyMapping model = JsonConvert.DeserializeObject<UserFamilyMapping>(ParaStr);
-            var umps = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId) 
+            var umps = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId)
             && r.UserId.Equals(model.UserId)
-            &&r.RoleId.Equals("3")).ToList();
-            foreach (var item in umps) {
+            && r.RoleId.Equals("3")).ToList();
+            foreach (var item in umps)
+            {
                 _serverDbContext.UserFamilyMapping.Remove(item);
             }
             ret.msg = "绑定信息删除成功！";
@@ -353,6 +386,7 @@ namespace LightupFactoryService.BusinessLogic
         /// <summary>
         /// 2022-2-28,根据用户Id 获取Family List
         /// 7 Mar 2022, solve bug: own family has null value in list; possible history data issue, delete family, but didn't delete the mapping table
+
         /// </summary>
         /// <param name="userStr"></param>
         /// <returns></returns>
@@ -360,21 +394,26 @@ namespace LightupFactoryService.BusinessLogic
         {
             retModel ret = new retModel();
             UserInfo model = JsonConvert.DeserializeObject<UserInfo>(userStr);
-           List<string> Fam_List = new List<string>();
+
+            List<string> Fam_List = new List<string>();
             var FamilyList = _serverDbContext.Family;
-            var userFamMap = _serverDbContext.UserFamilyMapping.Where(r => r.UserId.Equals(model.UserId)&&r.RoleId.Equals("1")).ToList();
-            foreach (var userFam in userFamMap) {
+            var userFamMap = _serverDbContext.UserFamilyMapping.Where(r => r.UserId.Equals(model.UserId) && r.RoleId.Equals("1")).ToList();
+            foreach (var userFam in userFamMap)
+            {
                 var family = FamilyList.Where(r => r.FamilyId.Equals(userFam.FamilyId)).FirstOrDefault();
                 Fam_List.Add(family.FamilyId);
             }
+
+
             ret.code = 0;
-            ret.msg = "获取管理的Family 清单";
+            ret.msg = "获取绑定的家庭信息";
             ret.data = Fam_List;
             return ret;
         }
 
         /// <summary>
         /// 2022-3-22， 根据角色获取Family 清单
+        /// /// July 18 2022, dispaly user binding family according to new requirement, need to display family name and binding user name
         /// </summary>
         /// <param name="userStr"></param>
         /// <returns></returns>
@@ -382,28 +421,54 @@ namespace LightupFactoryService.BusinessLogic
         {
             retModel ret = new retModel();
             UserFamilyMapping model = JsonConvert.DeserializeObject<UserFamilyMapping>(userStr);
-            List<string> Fam_List = new List<string>();
-           
-            var userFamMap = _serverDbContext.UserFamilyMapping.Where(r => r.UserId.Equals(model.UserId) && r.RoleId.Equals(model.RoleId)).ToList();
-            foreach (var userFam in userFamMap)
+
+            //July 18 2022, modify get onwner info methods
+            if (model.RoleId == "3")
             {
-                Fam_List.Add(userFam.FamilyId);
+                var mybindFam = (from aa in _serverDbContext.UserFamilyMapping
+                                 join bb in _serverDbContext.Family on aa.FamilyId equals bb.FamilyId
+                                 join cc in _serverDbContext.Member on aa.MemberId equals cc.MemberId
+                                 where aa.UserId == model.UserId && aa.RoleId == "3"&&aa.Is_Locked==0
+                                 select new
+                                 {
+                                     bb.FamilyName,
+                                     bb.GivenName,
+                                     cc.MemberName,
+                                     aa.UserFamilyMapId,
+                                     aa.FamilyId,
+                                     aa.MemberId
+                                 }).ToList();
+                ret.code = 0;
+                ret.msg = "获取角色绑定的Family 清单";
+                ret.data = mybindFam;
+                return ret;
             }
-            ret.code = 0;
-            ret.msg = "获取角色对应的Family 清单";
-            ret.data = Fam_List;
-            return ret;
+            else
+            {
+                List<string> Fam_List = new List<string>();
+
+                var userFamMap = _serverDbContext.UserFamilyMapping.Where(r => r.UserId.Equals(model.UserId) && r.RoleId.Equals(model.RoleId)).ToList();
+                foreach (var userFam in userFamMap)
+                {
+                    Fam_List.Add(userFam.FamilyId);
+                }
+                ret.code = 0;
+                ret.msg = "获取角色对应的Family 清单";
+                ret.data = Fam_List;
+                return ret;
+            }
         }
 
         /// <summary>
         /// 2022-3-19, 获取用户List
         /// </summary>
         /// <returns></returns>
-        public retModel GetUserList(string _UserStr) {
+        public retModel GetUserList(string _UserStr)
+        {
             retModel ret = new retModel();
             var userList = _serverDbContext.UserInfo.Where(r => r.Is_Delete == 0).ToList();
             ret.data = userList;
             return ret;
         }
-    }       
+    }
 }

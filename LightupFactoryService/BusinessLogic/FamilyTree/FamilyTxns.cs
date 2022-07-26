@@ -446,6 +446,7 @@ namespace LightupFactoryService.BusinessLogic
         /// 添加家族编辑者/
         /// 2022-3-21, 检查是否已经存在
         /// 2022-5-24，增加audit Taks请求
+        /// 2022-7-25, 为申请成为家庭编辑者添加请求
         /// </summary>
         /// <param name="ParaStr"></param>
         /// <returns></returns>
@@ -505,8 +506,42 @@ namespace LightupFactoryService.BusinessLogic
                         userFamilyMapId = model.UserFamilyMapId
                     };
                 }
-                else
+                else if (model.RoleId == "2")
                 {
+                    // add validation, by familyid, by userid, by roleid
+                    var ufm = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId) && r.UserId.Equals(model.UserId) && r.RoleId.Equals("2")).FirstOrDefault();
+                    if (ufm != null)
+                    {
+                        //already existe
+                        ret.code = -1;                        
+                        ret.msg = "您已经申请了该家族的编辑者" ;
+                        if (ufm.Is_Locked == 1)
+                        {
+                            ret.msg += ", 状态为待审批，请联系管理审批通过";
+                        }
+                        return ret;
+                    }
+                    model.Is_Locked = 1;//lock at first, waiting for audit finish, change status to 0
+
+                    //add audit history
+                    //render user infor.
+                    var userName = _serverDbContext.UserInfo.Where(r => r.UserId.Equals(model.UserId)).FirstOrDefault();
+                    var member = _serverDbContext.Member.Where(r => r.MemberId.Equals(model.MemberId)).FirstOrDefault();
+                    var familyName = _serverDbContext.Family.Where(r => r.FamilyId.Equals(model.FamilyId)).FirstOrDefault();
+                    AuditTxns audits = new AuditTxns(_serverDbContext, model.UserId);//实例化方法，call specified methods
+                    AuditTask atmod = new AuditTask();
+                    atmod.title = "家庭编辑者申请";
+                    atmod.auditTaskName = model.optionField1;//借用audit Task Name来存储申请原因
+                    atmod.contents = "用户" + userName.FullName + "(" + userName.UserName + "),申请成为" + familyName.FamilyName + "的编辑者，请审核！";
+                    atmod.type = 2;
+                    atmod.objectId = model.UserFamilyMapId;//存储user
+                    atmod.objectName = "UserFamilyMapping";
+                    atmod.applicator = model.UserId;
+                    atmod.familyId = model.FamilyId;
+                    atmod.objectChange = ParaStr;//提交申请内容，前台可以解析成页面显示
+                    audits.createAuditTask(atmod);
+                }
+                else {
                     model.Is_Locked = 0;
                 }
 
@@ -532,6 +567,7 @@ namespace LightupFactoryService.BusinessLogic
 
         /// <summary>
         /// 2022-3-20, 获取fanmilyEditor信息, Render成前端需要的样式
+        /// 2022-7-25, 增加根据RoleId筛选,排除成员绑定，role id=3
         /// </summary>
         /// <param name="ParaStr"></param>
         /// <returns></returns>
@@ -539,11 +575,10 @@ namespace LightupFactoryService.BusinessLogic
         {
             retModel ret = new retModel();
             UserFamilyMapping model = JsonConvert.DeserializeObject<UserFamilyMapping>(ParaStr);
-            //var EditList = _serverDbContext.UserFamilyMapping.Where(r => r.Is_Delete == 0 && r.FamilyId.Equals(model.FamilyId)).ToList();
-
+            
             var EditList = (from a in _serverDbContext.UserFamilyMapping
                             join b in _serverDbContext.UserInfo on a.UserId equals b.UserId
-                            where a.Is_Delete == 0 && a.FamilyId.Equals(model.FamilyId) && b.Is_Delete == 0
+                            where a.Is_Delete == 0 && a.FamilyId.Equals(model.FamilyId) && b.Is_Delete == 0 &&a.RoleId!="3"
                             orderby a.createDate
                             select new
                             {

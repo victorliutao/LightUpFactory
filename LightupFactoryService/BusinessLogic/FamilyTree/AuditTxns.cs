@@ -76,7 +76,7 @@ namespace LightupFactoryService.BusinessLogic
             if (at.approvalStatus == 1)
             {
                 //修改member Bind
-                if (at.type == 1)
+                if (at.objectName == "UserFamilyMapping")
                 {
                     var ump = _serverDbContext.UserFamilyMapping.Where(r => r.UserFamilyMapId.Equals(at.objectId)).FirstOrDefault();
                     if (ump != null)
@@ -170,7 +170,7 @@ namespace LightupFactoryService.BusinessLogic
             }
             else {
                 //表示审批未通过
-                if (at.type == 1)
+                if (at.objectName == "UserFamilyMapping")
                 {
                     //删除用户绑定
                     var ump = _serverDbContext.UserFamilyMapping.Where(r => r.UserFamilyMapId.Equals(at.objectId)).FirstOrDefault();

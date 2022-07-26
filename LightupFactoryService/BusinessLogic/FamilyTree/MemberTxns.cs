@@ -374,7 +374,7 @@ namespace LightupFactoryService.BusinessLogic
             UserFamilyMapping model = JsonConvert.DeserializeObject<UserFamilyMapping>(ParaStr);
             var umps = _serverDbContext.UserFamilyMapping.Where(r => r.FamilyId.Equals(model.FamilyId)
             && r.UserId.Equals(model.UserId)
-            && r.RoleId.Equals("3")).ToList();
+            && r.RoleId.Equals(model.RoleId)).ToList();
             foreach (var item in umps)
             {
                 _serverDbContext.UserFamilyMapping.Remove(item);
@@ -447,7 +447,7 @@ namespace LightupFactoryService.BusinessLogic
             {
                 List<string> Fam_List = new List<string>();
 
-                var userFamMap = _serverDbContext.UserFamilyMapping.Where(r => r.UserId.Equals(model.UserId) && r.RoleId.Equals(model.RoleId)).ToList();
+                var userFamMap = _serverDbContext.UserFamilyMapping.Where(r => r.UserId.Equals(model.UserId) && r.RoleId.Equals(model.RoleId)&&r.Is_Locked==0&&r.Is_Delete==0).ToList();
                 foreach (var userFam in userFamMap)
                 {
                     Fam_List.Add(userFam.FamilyId);

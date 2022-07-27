@@ -243,6 +243,7 @@ namespace LightupFactoryService.BusinessLogic
 										 auditTaskId=a.auditTaskId,
 										 type = a.type,
 										 status = a.status,
+										 approvalStatus=a.approvalStatus,
 										 title=a.title,
 										 applicator = c.FullName,// get applicator's name by mapping with userinfo
 										 contents=a.contents,

@@ -9,13 +9,13 @@ namespace LightupFactoryService.Model
     /// <summary>
     /// 用于及Family/Member对应关系
     /// 2022-2-28
-    /// 
+    /// 2022-7-27, TableMaster已经有UserId,无需再单独定义
     /// </summary>
     public class UserFamilyMapping:TableMaster
     {
         [Key]
         public string UserFamilyMapId { get; set; }
-        public string UserId { get; set; }
+        //public string UserId { get; set; }
         /// <summary>
         /// 借用字段，存储电话号码
         /// </summary>

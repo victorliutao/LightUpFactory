@@ -2,6 +2,8 @@
  作者：刘涛
  时间：2022-5-23
  用途：消息中心构建
+ 修改记录：
+ --1. 2022-7-27，修改以支持前端根据消息类型筛选
  */
 using System;
 using System.Collections.Generic;
@@ -182,11 +184,12 @@ namespace LightupFactoryService.BusinessLogic
             return ret;
         }
 
+		//2022-7-27, 目前默认是获取status=0即待审批的任务，修改为通过读取前端传过来的status值来筛选
         public retModel getAuditTasks(string paraStr) {
             retModel ret = new retModel();
             AuditTask model = JsonConvert.DeserializeObject<AuditTask>(paraStr);
             //all filter audit task by many conditions
-            var auditTasks = _serverDbContext.AuditTask.Where(r => r.status == 0).ToList();//step 1: query for all open task
+            var auditTasks = _serverDbContext.AuditTask.Where(r => r.status == model.status).ToList();//step 1: query for all open task
             var filAuditTasks = auditTasks;
             //determin user by user id;
             //use case 1: get my to approval list; use applicator to denote the owner input

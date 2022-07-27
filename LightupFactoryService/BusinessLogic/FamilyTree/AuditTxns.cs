@@ -189,37 +189,76 @@ namespace LightupFactoryService.BusinessLogic
             retModel ret = new retModel();
             AuditTask model = JsonConvert.DeserializeObject<AuditTask>(paraStr);
             //all filter audit task by many conditions
-            var auditTasks = _serverDbContext.AuditTask.Where(r => r.status == model.status).ToList();//step 1: query for all open task
-            var filAuditTasks = auditTasks;
-            //determin user by user id;
-            //use case 1: get my to approval list; use applicator to denote the owner input
-            if (!string.IsNullOrEmpty(model.applicator))
-            {
-                //get my to do list; need to mapping with user mapping table.get the family list of this user who act as ownner.
-                var usermaps = _serverDbContext.UserFamilyMapping.Where(r => r.UserId.Equals(model.applicator) && r.RoleId.Equals("1")).ToList();//get alls the owned families for the owner user id
-                                                                                                                                                 //use join to get the list.
-                filAuditTasks = (from a in auditTasks
-                                 join b in usermaps on a.familyId equals b.FamilyId
-                                 join c in _serverDbContext.UserInfo on a.applicator equals c.UserId
-                                 select new AuditTask
-                                 {
-                                     auditTaskId=a.auditTaskId,
-                                     type = a.type,
-                                     status = a.status,
-                                     title=a.title,
-                                     applicator = c.FullName,// get applicator's name by mapping with userinfo
-                                     contents=a.contents,
-                                     openDate=a.openDate,
-                                     objectChange=a.objectChange,
-                                     objectName=a.objectName
-                                 }
-                               ).OrderByDescending(s=>s.openDate).ToList();
+			if(model.status==0)
+			{
+				//July 27 2022, get data by status
+				var auditTasks = _serverDbContext.AuditTask.Where(r => r.status == model.status).ToList();//step 1: query for all open task
+				var filAuditTasks = auditTasks;
+				//determin user by user id;
+				//use case 1: get my to approval list; use applicator to denote the owner input			
+				if (!string.IsNullOrEmpty(model.applicator))
+				{
+					//get my to do list; need to mapping with user mapping table.get the family list of this user who act as ownner.
+					var usermaps = _serverDbContext.UserFamilyMapping.Where(r => r.UserId.Equals(model.applicator) && r.RoleId.Equals("1")).ToList();//get alls the owned families for the owner user id
+																																					 //use join to get the list.
+					filAuditTasks = (from a in auditTasks
+									 join b in usermaps on a.familyId equals b.FamilyId
+									 join c in _serverDbContext.UserInfo on a.applicator equals c.UserId
+									 select new AuditTask
+									 {
+										 auditTaskId=a.auditTaskId,
+										 type = a.type,
+										 status = a.status,
+										 title=a.title,
+										 applicator = c.FullName,// get applicator's name by mapping with userinfo
+										 contents=a.contents,
+										 openDate=a.openDate,
+										 objectChange=a.objectChange,
+										 objectName=a.objectName
+									 }
+								   ).OrderByDescending(s=>s.openDate).ToList();
 
-            }
+				}
 
-            ret.data = filAuditTasks;
-            ret.msg = "获取待审核内容成功";
+				ret.data = filAuditTasks;
+				ret.msg = "获取待审核内容成功";
+			}
+			else if(model.status==1){
+				//获取已审批的内容，放在审批者的已读消息中
+				//包含已同意和已拒绝的内容
+				var auditTasks = _serverDbContext.AuditTask.Where(r => r.status == 1||r.status==2).ToList();//step 1: query for all approved or rejected tasks
+				var filAuditTasks = auditTasks;
+				//determin user by user id;
+				//use case 1: get my to approval list; use applicator to denote the owner input			
+				if (!string.IsNullOrEmpty(model.applicator))
+				{
+					//get my to do list; need to mapping with user mapping table.get the family list of this user who act as ownner.
+					var usermaps = _serverDbContext.UserFamilyMapping.Where(r => r.UserId.Equals(model.applicator) && r.RoleId.Equals("1")).ToList();//get alls the owned families for the owner user id
+																																					 //use join to get the list.
+					filAuditTasks = (from a in auditTasks
+									 join b in usermaps on a.familyId equals b.FamilyId
+									 join c in _serverDbContext.UserInfo on a.applicator equals c.UserId
+									 select new AuditTask
+									 {
+										 auditTaskId=a.auditTaskId,
+										 type = a.type,
+										 status = a.status,
+										 title=a.title,
+										 applicator = c.FullName,// get applicator's name by mapping with userinfo
+										 contents=a.contents,
+										 openDate=a.openDate,
+										 objectChange=a.objectChange,
+										 objectName=a.objectName
+									 }
+								   ).OrderByDescending(s=>s.openDate).ToList();
+
+				}
+
+				ret.data = filAuditTasks;
+				ret.msg = "获取待审核内容成功";
+			}
             
+			
             return ret;
         }
 
